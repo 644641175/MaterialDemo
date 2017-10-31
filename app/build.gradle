@@ -26,4 +26,13 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:26.+'
     testCompile 'junit:junit:4.12'
+
+   /*添加design库，需要用到库中NavigationView控件，版本需要和appcompat保持一致*/
+    compile 'com.android.support:design:26.+'
+    /*github开源jar包，实现图片圆形化*/
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
+
+
+
 }
