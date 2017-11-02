@@ -6,7 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout">
 
-<FrameLayout
+
+    <!--CoordinatorLayout,加强版的FrameLayout，监听其子控件，做出合理的布局响应-->
+<android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,7 +24,17 @@
         Toolbar 使用Dark.ActionBar（深色主题）
         popupThem:将弹出的菜单栏指定成淡色主题
     -->
-</FrameLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_done_black_24dp"/>
+
+</android.support.design.widget.CoordinatorLayout>
 
 
     <!--此处菜单栏放任意控件都可以，但layout_gravity 属性必须指定-->
