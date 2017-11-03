@@ -6,6 +6,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,15 +18,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.rh.materialdemo.Util.RefreshUtils;
 import com.rh.materialdemo.adapter.PictureAdapter;
 import com.rh.materialdemo.bean.Picture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private List<Picture> pictureList = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private PictureAdapter pictureAdapter;
+    private Picture[] pictures = {
+            new Picture("2017-0801", R.mipmap.ic_20170801),
+            new Picture("2017-0802",R.mipmap.ic_20170802),
+            new Picture("2017-0803",R.mipmap.ic_20170803),
+            new Picture("2017-0804",R.mipmap.ic_20170804),
+            new Picture("2017-0805",R.mipmap.ic_20170808),
+            new Picture("2017-0806",R.mipmap.ic_20170809),
+            new Picture("2017-0807",R.mipmap.ic_20170810),
+            new Picture("2017-0808",R.mipmap.ic_20170812),
+            new Picture("2017-0809",R.mipmap.ic_20170813),
+            new Picture("2017-0810",R.mipmap.ic_20170814),
+            new Picture("2017-0811",R.mipmap.ic_20170815),
+            new Picture("2017-0812",R.mipmap.ic_20170816),
+            new Picture("2017-0813",R.mipmap.ic_20170817),
+            new Picture("2017-0814",R.mipmap.ic_20170818),
+            new Picture("2017-0815",R.mipmap.ic_20170819),
+            new Picture("2017-0816",R.mipmap.ic_20170820),
+            new Picture("2017-0817",R.mipmap.ic_20170821),
+            new Picture("2017-0818",R.mipmap.ic_20170822),
+            new Picture("2017-0819",R.mipmap.ic_20170823),
+            new Picture("2017-0820",R.mipmap.ic_20170826)
+
+
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,34 +72,51 @@ public class MainActivity extends AppCompatActivity {
 
         initPicture();
         initRecyclerView();
+        initSwipeRefresh();
     }
 
-    private void initPicture() {
+    private void initSwipeRefresh() {
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                initPicture();
+                                pictureAdapter.notifyDataSetChanged();
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    }
+                }).start();
+            }
+        });
+    }
+
+    private void initPicture(){
         pictureList.clear();
-        pictureList.add(new Picture("2017-0801",R.mipmap.ic_20170801));
-        pictureList.add(new Picture("2017-0802",R.mipmap.ic_20170802));
-        pictureList.add(new Picture("2017-0803",R.mipmap.ic_20170803));
-        pictureList.add(new Picture("2017-0804",R.mipmap.ic_20170804));
-        pictureList.add(new Picture("2017-0805",R.mipmap.ic_20170808));
-        pictureList.add(new Picture("2017-0806",R.mipmap.ic_20170809));
-        pictureList.add(new Picture("2017-0807",R.mipmap.ic_20170810));
-        pictureList.add(new Picture("2017-0808",R.mipmap.ic_20170812));
-        pictureList.add(new Picture("2017-0809",R.mipmap.ic_20170813));
-        pictureList.add(new Picture("2017-0810",R.mipmap.ic_20170814));
-        pictureList.add(new Picture("2017-0811",R.mipmap.ic_20170815));
-        pictureList.add(new Picture("2017-0812",R.mipmap.ic_20170816));
-        pictureList.add(new Picture("2017-0813",R.mipmap.ic_20170817));
-        pictureList.add(new Picture("2017-0814",R.mipmap.ic_20170818));
-        pictureList.add(new Picture("2017-0815",R.mipmap.ic_20170819));
-        pictureList.add(new Picture("2017-0816",R.mipmap.ic_20170820));
-        pictureList.add(new Picture("2017-0817",R.mipmap.ic_20170821));
+        for (int i = 0; i<pictures.length;i++){
+            Random random =new Random();
+            int index = random.nextInt(pictures.length);
+            pictureList.add(pictures[index]);
+        }
     }
 
     private void initRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(layoutManager);
-        PictureAdapter pictureAdapter = new PictureAdapter(pictureList);
+         pictureAdapter = new PictureAdapter(pictureList);
         recyclerView.setAdapter(pictureAdapter);
     }
 
