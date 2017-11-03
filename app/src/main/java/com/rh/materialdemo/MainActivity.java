@@ -9,15 +9,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.rh.materialdemo.adapter.PictureAdapter;
+import com.rh.materialdemo.bean.Picture;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
-
+    private List<Picture> pictureList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +40,38 @@ public class MainActivity extends AppCompatActivity {
         }
         initNavigationView();//初始化滑动菜单布局
         initFloatingActionButton();//初始化悬浮按钮
+
+        initPicture();
+        initRecyclerView();
+    }
+
+    private void initPicture() {
+        pictureList.clear();
+        pictureList.add(new Picture("2017-0801",R.mipmap.ic_20170801));
+        pictureList.add(new Picture("2017-0802",R.mipmap.ic_20170802));
+        pictureList.add(new Picture("2017-0803",R.mipmap.ic_20170803));
+        pictureList.add(new Picture("2017-0804",R.mipmap.ic_20170804));
+        pictureList.add(new Picture("2017-0805",R.mipmap.ic_20170808));
+        pictureList.add(new Picture("2017-0806",R.mipmap.ic_20170809));
+        pictureList.add(new Picture("2017-0807",R.mipmap.ic_20170810));
+        pictureList.add(new Picture("2017-0808",R.mipmap.ic_20170812));
+        pictureList.add(new Picture("2017-0809",R.mipmap.ic_20170813));
+        pictureList.add(new Picture("2017-0810",R.mipmap.ic_20170814));
+        pictureList.add(new Picture("2017-0811",R.mipmap.ic_20170815));
+        pictureList.add(new Picture("2017-0812",R.mipmap.ic_20170816));
+        pictureList.add(new Picture("2017-0813",R.mipmap.ic_20170817));
+        pictureList.add(new Picture("2017-0814",R.mipmap.ic_20170818));
+        pictureList.add(new Picture("2017-0815",R.mipmap.ic_20170819));
+        pictureList.add(new Picture("2017-0816",R.mipmap.ic_20170820));
+        pictureList.add(new Picture("2017-0817",R.mipmap.ic_20170821));
+    }
+
+    private void initRecyclerView() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        recyclerView.setLayoutManager(layoutManager);
+        PictureAdapter pictureAdapter = new PictureAdapter(pictureList);
+        recyclerView.setAdapter(pictureAdapter);
     }
 
     private void initFloatingActionButton() {
