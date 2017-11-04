@@ -1,6 +1,8 @@
 package com.rh.materialdemo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.rh.materialdemo.R;
+import com.rh.materialdemo.activity.PictureActivity;
 import com.rh.materialdemo.bean.Picture;
 
 import java.util.List;
@@ -26,11 +29,12 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
     static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView pictureImage;
         TextView pictureName;
-
+        CardView cardView;
         private ViewHolder(View itemView) {
             super(itemView);
             pictureImage = itemView.findViewById(R.id.picture);
             pictureName = itemView.findViewById(R.id.picture_name);
+            cardView = itemView.findViewById(R.id.cardView);
         }
     }
 
@@ -44,7 +48,22 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.picture_item , parent ,false);
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                Picture picture = mPictureList.get(position);
+                Intent intent = new Intent(mContext, PictureActivity.class);
+                intent.putExtra(PictureActivity.NAME,picture.getName());
+                intent.putExtra(PictureActivity.IMAGE_ID,picture.getImageId());
+                mContext.startActivity(intent);
+            }
+        });
+
+        return holder;
     }
 
     @Override

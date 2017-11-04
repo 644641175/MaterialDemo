@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.rh.materialdemo.Util.RefreshUtils;
 import com.rh.materialdemo.adapter.PictureAdapter;
 import com.rh.materialdemo.bean.Picture;
 
