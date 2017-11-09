@@ -1,5 +1,6 @@
 package com.rh.materialdemo;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -18,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.rh.materialdemo.activity.ClientActivity;
+import com.rh.materialdemo.activity.ServerActivity;
 import com.rh.materialdemo.adapter.PictureAdapter;
 import com.rh.materialdemo.bean.Picture;
 
@@ -69,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         initNavigationView();//初始化滑动菜单布局
         initFloatingActionButton();//初始化悬浮按钮
 
-        initPicture();
-        initRecyclerView();
-        initSwipeRefresh();
+        initPicture();//初始化图片
+        initRecyclerView();//初始化控件
+        initSwipeRefresh();//初始化刷新控件
     }
 
     private void initSwipeRefresh() {
@@ -138,23 +141,45 @@ public class MainActivity extends AppCompatActivity {
 
     private void initNavigationView() {
         NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
-        navView.setCheckedItem(R.id.nav_call);//将Call菜单项设置为默认选中
+        //navView.setCheckedItem(R.id.nav_call);//将Call菜单项设置为默认选中
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.nav_call:
+                        Intent intent_client = new Intent(MainActivity.this, ClientActivity.class);
+                        startActivity(intent_client);
+                        break;
+                    case R.id.nav_folder:
+                        Intent intent_server = new Intent(MainActivity.this, ServerActivity.class);
+                        startActivity(intent_server);
+                        break;
+                    case R.id.nav_friend:
+                        Toast.makeText(MyApplication.getContext(), "You clicked nav_friend", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.nav_location:
+                        Toast.makeText(MyApplication.getContext(), "You clicked nav_location", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.nav_mail:
+                        Toast.makeText(MyApplication.getContext(), "You clicked nav_mail", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
-
     }
 
+    /*加载Toolbar菜单文件*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
         return true;
     }
 
+    /*Toolbar点击事件*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

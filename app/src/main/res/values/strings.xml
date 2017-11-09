@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MaterialDemo</string>
+    <string name="title_activity_server">ServerActivity</string>
+    <string name="title_activity_client">ClientActivity</string>
 </resources>
