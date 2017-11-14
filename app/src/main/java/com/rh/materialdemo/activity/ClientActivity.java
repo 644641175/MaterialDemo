@@ -1,5 +1,8 @@
 package com.rh.materialdemo.activity;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -90,6 +94,35 @@ public class ClientActivity extends AppCompatActivity {
 
             }
 
+        });
+
+        findViewById(R.id.splitscreen).setOnClickListener(new View.OnClickListener() {
+            /*
+            * Android7.0以上API默认支持分屏android:resizeableActivity="true",不想某应用支持分屏，在Application和Activity中设置false即可。
+            * */
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    if (ClientActivity.this.isInMultiWindowMode()){
+                        //开启本应用Activity
+                        Intent intent_client = new Intent(ClientActivity.this, ServerActivity.class);
+                        intent_client.setFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT | Intent.FLAG_ACTIVITY_NEW_TASK);//分屏模式下在另一窗口启动
+                        startActivity(intent_client);
+                        //开启其它应用程序
+                        /*Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        ComponentName cn = new ComponentName("com.example.cardview", "com.example.cardview.MainActivity");
+                        intent.setComponent(cn);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT | Intent.FLAG_ACTIVITY_NEW_TASK);//分屏模式下在另一窗口启动应用
+                        startActivity(intent);*/
+
+                    }else{
+                        Toast.makeText(ClientActivity.this,"当前未处于分屏模式",Toast.LENGTH_LONG).show();
+                    }
+                }else {
+                    Toast.makeText(ClientActivity.this,"当前Android版本不支持分屏",Toast.LENGTH_LONG).show();
+                }
+            }
         });
     }
 

@@ -2,4 +2,14 @@
     <string name="app_name">MaterialDemo</string>
     <string name="title_activity_server">ServerActivity</string>
     <string name="title_activity_client">ClientActivity</string>
+    <string name="client_btn_splitscreen">分屏</string>
+    <string name="client_btn_xml">XML</string>
+    <string name="client_btn_json">JSON</string>
+    <string name="client_text_mood">话语：</string>
+    <string name="client_text_date">日期：</string>
+    <string name="client_text_date_content">2017年11月06日</string>
+    <string name="client_text_weather">天气：</string>
+    <string name="client_text_weather_content">多云</string>
+    <string name="client_text_location">地点：</string>
+    <string name="client_text_location_content">湖北省武汉市XX区XXXXXXXX</string>
 </resources>
