@@ -32,6 +32,9 @@
             android:name=".activity.ClientActivity"
             android:label="@string/title_activity_client"
             android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".activity.WeatherActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

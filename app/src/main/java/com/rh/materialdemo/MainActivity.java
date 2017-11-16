@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.rh.materialdemo.activity.ClientActivity;
 import com.rh.materialdemo.activity.ServerActivity;
+import com.rh.materialdemo.activity.WeatherActivity;
 import com.rh.materialdemo.adapter.PictureAdapter;
 import com.rh.materialdemo.bean.Picture;
 
@@ -155,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent_server);
                         break;
                     case R.id.nav_friend:
-                        Toast.makeText(MyApplication.getContext(), "You clicked nav_friend", Toast.LENGTH_SHORT).show();
+                        Intent intent_weather = new Intent(MainActivity.this, WeatherActivity.class);
+                        startActivity(intent_weather);
                         break;
                     case R.id.nav_location:
                         Toast.makeText(MyApplication.getContext(), "You clicked nav_location", Toast.LENGTH_SHORT).show();
