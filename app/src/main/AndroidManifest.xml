@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rh.materialdemo">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".MyApplication"
@@ -31,10 +31,11 @@
         <activity
             android:name=".activity.ClientActivity"
             android:label="@string/title_activity_client"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.WeatherActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name=".activity.WeatherLocationActivity"></activity>
     </application>
 
 </manifest>

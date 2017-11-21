@@ -1,6 +1,8 @@
 package com.rh.materialdemo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.rh.materialdemo.activity.ClientActivity;
 import com.rh.materialdemo.activity.ServerActivity;
 import com.rh.materialdemo.activity.WeatherActivity;
+import com.rh.materialdemo.activity.WeatherLocationActivity;
 import com.rh.materialdemo.adapter.PictureAdapter;
 import com.rh.materialdemo.bean.Picture;
 
@@ -36,28 +39,29 @@ public class MainActivity extends AppCompatActivity {
     private PictureAdapter pictureAdapter;
     private Picture[] pictures = {
             new Picture("2017-0801", R.mipmap.ic_20170801),
-            new Picture("2017-0802",R.mipmap.ic_20170802),
-            new Picture("2017-0803",R.mipmap.ic_20170803),
-            new Picture("2017-0804",R.mipmap.ic_20170804),
-            new Picture("2017-0805",R.mipmap.ic_20170808),
-            new Picture("2017-0806",R.mipmap.ic_20170809),
-            new Picture("2017-0807",R.mipmap.ic_20170810),
-            new Picture("2017-0808",R.mipmap.ic_20170812),
-            new Picture("2017-0809",R.mipmap.ic_20170813),
-            new Picture("2017-0810",R.mipmap.ic_20170814),
-            new Picture("2017-0811",R.mipmap.ic_20170815),
-            new Picture("2017-0812",R.mipmap.ic_20170816),
-            new Picture("2017-0813",R.mipmap.ic_20170817),
-            new Picture("2017-0814",R.mipmap.ic_20170818),
-            new Picture("2017-0815",R.mipmap.ic_20170819),
-            new Picture("2017-0816",R.mipmap.ic_20170820),
-            new Picture("2017-0817",R.mipmap.ic_20170821),
-            new Picture("2017-0818",R.mipmap.ic_20170822),
-            new Picture("2017-0819",R.mipmap.ic_20170823),
-            new Picture("2017-0820",R.mipmap.ic_20170826)
+            new Picture("2017-0802", R.mipmap.ic_20170802),
+            new Picture("2017-0803", R.mipmap.ic_20170803),
+            new Picture("2017-0804", R.mipmap.ic_20170804),
+            new Picture("2017-0805", R.mipmap.ic_20170808),
+            new Picture("2017-0806", R.mipmap.ic_20170809),
+            new Picture("2017-0807", R.mipmap.ic_20170810),
+            new Picture("2017-0808", R.mipmap.ic_20170812),
+            new Picture("2017-0809", R.mipmap.ic_20170813),
+            new Picture("2017-0810", R.mipmap.ic_20170814),
+            new Picture("2017-0811", R.mipmap.ic_20170815),
+            new Picture("2017-0812", R.mipmap.ic_20170816),
+            new Picture("2017-0813", R.mipmap.ic_20170817),
+            new Picture("2017-0814", R.mipmap.ic_20170818),
+            new Picture("2017-0815", R.mipmap.ic_20170819),
+            new Picture("2017-0816", R.mipmap.ic_20170820),
+            new Picture("2017-0817", R.mipmap.ic_20170821),
+            new Picture("2017-0818", R.mipmap.ic_20170822),
+            new Picture("2017-0819", R.mipmap.ic_20170823),
+            new Picture("2017-0820", R.mipmap.ic_20170826)
 
 
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,10 +110,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initPicture(){
+    private void initPicture() {
         pictureList.clear();
-        for (int i = 0; i<pictures.length;i++){
-            Random random =new Random();
+        for (int i = 0; i < pictures.length; i++) {
+            Random random = new Random();
             int index = random.nextInt(pictures.length);
             pictureList.add(pictures[index]);
         }
@@ -117,9 +121,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-         pictureAdapter = new PictureAdapter(pictureList);
+        pictureAdapter = new PictureAdapter(pictureList);
         recyclerView.setAdapter(pictureAdapter);
     }
 
@@ -131,11 +135,11 @@ public class MainActivity extends AppCompatActivity {
                 //Snackbar,可添加功能的Toast
                 Snackbar.make(v, "Data deleted", Snackbar.LENGTH_SHORT)
                         .setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this,"Data restored",Toast.LENGTH_SHORT).show();
-                    }
-                }).show();
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Data restored", Toast.LENGTH_SHORT).show();
+                            }
+                        }).show();
             }
         });
     }
@@ -146,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.nav_call:
                         Intent intent_client = new Intent(MainActivity.this, ClientActivity.class);
                         startActivity(intent_client);
@@ -156,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent_server);
                         break;
                     case R.id.nav_friend:
-                        Intent intent_weather = new Intent(MainActivity.this, WeatherActivity.class);
-                        startActivity(intent_weather);
+                        Intent intent_weather_location = new Intent(MainActivity.this, WeatherLocationActivity.class);
+                        startActivity(intent_weather_location);
                         break;
                     case R.id.nav_location:
                         Toast.makeText(MyApplication.getContext(), "You clicked nav_location", Toast.LENGTH_SHORT).show();

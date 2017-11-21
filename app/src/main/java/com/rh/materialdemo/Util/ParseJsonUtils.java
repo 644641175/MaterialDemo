@@ -9,6 +9,7 @@ import com.rh.materialdemo.bean.Diary;
 import com.rh.materialdemo.db.City;
 import com.rh.materialdemo.db.County;
 import com.rh.materialdemo.db.Province;
+import com.rh.materialdemo.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +55,7 @@ public class ParseJsonUtils {
                     Province province = new Province();
                     province.setProvinceCode(provinceObject.getInt("id"));
                     province.setProvinceName(provinceObject.getString("name"));
-                    province.save();
+                    province.save();//将省份数据存入数据库
                 }
                 return true;
             } catch (JSONException e) {
@@ -79,6 +80,7 @@ public class ParseJsonUtils {
                     city.setCityName(cityObject.getString("name"));
                     city.setProvinceId(provinceId);
                     city.save();
+                    Log.e(TAG, "保存市信息到数据库: "+city.toString());
                 }
                 return true;
             } catch (JSONException e) {
@@ -102,6 +104,7 @@ public class ParseJsonUtils {
                     county.setCountyName(countyObject.getString("name"));
                     county.setCityId(cityId);
                     county.save();
+                    Log.e(TAG, "保存县信息到数据库: "+county.toString());
                 }
                 return true;
             } catch (JSONException e) {
@@ -109,6 +112,22 @@ public class ParseJsonUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 将返回的JSON数据解析成Weather实体类
+     */
+
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

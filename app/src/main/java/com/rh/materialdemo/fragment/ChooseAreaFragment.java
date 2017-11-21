@@ -2,6 +2,7 @@ package com.rh.materialdemo.fragment;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.ParseJsonUtils;
+import com.rh.materialdemo.activity.WeatherActivity;
 import com.rh.materialdemo.db.City;
 import com.rh.materialdemo.db.County;
 import com.rh.materialdemo.db.Province;
@@ -96,6 +98,12 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -170,11 +178,10 @@ public class ChooseAreaFragment extends Fragment {
         backButton.setVisibility(View.GONE);
         provinceList = DataSupport.findAll(Province.class);
         if (provinceList.size() > 0) {
-            Log.e(TAG, "重数据库queryProvinces: ");
-
+            Log.e(TAG, "从数据库queryProvinces: ");
             dataList.clear();
             for (Province province : provinceList) {
-                Log.e(TAG, "queryProvinces: " + province.toString());
+                //Log.e(TAG, "queryProvinces: " + province.toString());
                 dataList.add(province.getProvinceName());
             }
             adapter.notifyDataSetChanged();
@@ -198,6 +205,7 @@ public class ChooseAreaFragment extends Fragment {
         HttpUtils.sendOkHttpRequestWithGET(address, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "网上获取数据失败");
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -212,13 +220,17 @@ public class ChooseAreaFragment extends Fragment {
                 String responseText = response.body().string();
                 boolean result = false;
                 if ("province".equals(type)) {
+                    Log.e(TAG, "解析返回的省信息");
                     result = ParseJsonUtils.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
+                    Log.e(TAG, "解析返回的市信息");
                     result = ParseJsonUtils.handleCityResponse(responseText, selectedProvince.getId());
                 } else if ("county".equals(type)) {
+                    Log.e(TAG, "解析返回的县信息");
                     result = ParseJsonUtils.handleCountyResponse(responseText, selectedCity.getId());
                 }
                 if (result) {
+                    //线程中进行主线程操作
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
