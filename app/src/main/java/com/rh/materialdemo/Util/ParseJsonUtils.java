@@ -130,4 +130,18 @@ public class ParseJsonUtils {
         return null;
     }
 
+    /**
+     * 解析必应返回的图片消息
+     * @param response
+     * @return
+     * @throws JSONException
+     */
+    public static String handleBingPicResponse(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+       // JSONObject jsonObject1 = jsonObject.getJSONObject("tooltips");
+        JSONArray jsonArray = jsonObject.getJSONArray("images");
+        JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+        String url_Pic = jsonObject1.getString("url");
+        return url_Pic;
+    }
 }

@@ -1,6 +1,8 @@
 package com.rh.materialdemo.activity;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -8,18 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.gson.Forecast;
 import com.rh.materialdemo.gson.Weather;
 
-import org.w3c.dom.Text;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 
@@ -33,6 +38,7 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
     private static final String TAG = "WeatherActivity";
+    private ImageView bingPicImg;
     private ScrollView weatherLayout;
     private TextView titleCity;
     private TextView titleUpdateTime;
@@ -48,7 +54,16 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*状态栏与布局融合*/
+        if (Build.VERSION.SDK_INT >= 21){
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+
         setContentView(R.layout.activity_weather);
+
+        bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
         titleCity = (TextView) findViewById(R.id.weather_title_city);
         titleUpdateTime = (TextView) findViewById(R.id.weather_title_update_time);
@@ -60,7 +75,18 @@ public class WeatherActivity extends AppCompatActivity {
         comfortText = (TextView) findViewById(R.id.weather_suggestion_comfort_text);
         carWashText = (TextView) findViewById(R.id.weather_suggestion_car_wash_text);
         sportText = (TextView) findViewById(R.id.weather_suggestion_sport_text);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+          /*加载bing壁纸*/
+        String bingPic = prefs.getString("bing_pic", null);
+        if (bingPic != null) {
+            Glide.with(this).load(bingPic).into(bingPicImg);
+        } else {
+            loadBingPic();
+        }
+
+        /*加载天气*/
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
             //有缓存时直接解析天气数据
@@ -74,6 +100,39 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    /**
+     * j加载必应每日一图
+     */
+    private void loadBingPic() {
+        String requestBinPic = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US";
+        HttpUtils.sendOkHttpRequestWithGET(requestBinPic, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // Toast.makeText(WeatherActivity.this, "获取必应图片失败", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    final String bingPic = "https://www.bing.com" + ParseJsonUtils.handleBingPicResponse(response.body().string());
+                    Log.e(TAG, "onResponse: " + bingPic);
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                    editor.putString("bing_pic", bingPic);
+                    editor.apply();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Glide.with(WeatherActivity.this).load(bingPic).into(bingPicImg);
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -113,6 +172,7 @@ public class WeatherActivity extends AppCompatActivity {
                 });
             }
         });
+        loadBingPic();
     }
 
     /**
@@ -142,13 +202,13 @@ public class WeatherActivity extends AppCompatActivity {
             minText.setText(forecast.temperature.min);
             forecast_Layout.addView(view);
         }
-        if (weather.aqi != null){
+        if (weather.aqi != null) {
             aqiText.setText(weather.aqi.city.aqi);
             pm25Text.setText(weather.aqi.city.pm25);
         }
-        String comfort = "舒适度："+ weather.suggestion.comfort.info;
-        String carWash = "洗车指数："+ weather.suggestion.carWash.info;
-        String sport = "运动建议："+ weather.suggestion.sport.info;
+        String comfort = "舒适度：" + weather.suggestion.comfort.info;
+        String carWash = "洗车指数：" + weather.suggestion.carWash.info;
+        String sport = "运动建议：" + weather.suggestion.sport.info;
         comfortText.setText(comfort);
         carWashText.setText(carWash);
         sportText.setText(sport);
