@@ -31,10 +31,10 @@ public class ParseJsonUtils {
         List<Diary> diaryList = gson.fromJson(jsonData, new TypeToken<List<Diary>>() {
         }.getType());//需要解析的是一段JSON数组
         for (Diary diary : diaryList) {
-            Log.e(TAG, "parseJSONWithGSON: " + diary.getDate());
-            Log.e(TAG, "parseJSONWithGSON: " + diary.getWeather());
-            Log.e(TAG, "parseJSONWithGSON: " + diary.getLocation());
-            Log.e(TAG, "parseJSONWithGSON: " + diary.getMood());
+            Log.d(TAG, "parseJSONWithGSON: " + diary.getDate());
+            Log.d(TAG, "parseJSONWithGSON: " + diary.getWeather());
+            Log.d(TAG, "parseJSONWithGSON: " + diary.getLocation());
+            Log.d(TAG, "parseJSONWithGSON: " + diary.getMood());
         }
         // Diary diary = gson.fromJson(jsonData,Diary.class);//需要解析的是一个对象
         // Log.e(TAG, "parseJSONWithGSON: "+diary.getDate()+"\n"+diary.getWeather()+"\n"+diary.getLocation()+"\n"+diary.getMood());
@@ -80,7 +80,7 @@ public class ParseJsonUtils {
                     city.setCityName(cityObject.getString("name"));
                     city.setProvinceId(provinceId);
                     city.save();
-                    Log.e(TAG, "保存市信息到数据库: "+city.toString());
+                    Log.d(TAG, "保存市信息到数据库: "+city.toString());
                 }
                 return true;
             } catch (JSONException e) {
@@ -104,7 +104,7 @@ public class ParseJsonUtils {
                     county.setCountyName(countyObject.getString("name"));
                     county.setCityId(cityId);
                     county.save();
-                    Log.e(TAG, "保存县信息到数据库: "+county.toString());
+                    Log.d(TAG, "保存县信息到数据库: "+county.toString());
                 }
                 return true;
             } catch (JSONException e) {

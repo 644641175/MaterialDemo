@@ -130,14 +130,14 @@ public class ChooseAreaFragment extends Fragment {
         if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList) {
-                Log.e(TAG, "queryCounties: " + county.toString());
+                Log.d(TAG, "queryCounties: " + county.toString());
                 dataList.add(county.getCountyName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_COUNTY;
         } else {
-            Log.e(TAG, "网上抓取县");
+            Log.d(TAG, "网上抓取县");
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
             String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
@@ -155,14 +155,14 @@ public class ChooseAreaFragment extends Fragment {
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
-                Log.e(TAG, "queryCities: " + city.toString());
+                Log.d(TAG, "queryCities: " + city.toString());
                 dataList.add(city.getCityName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_CITY;
         } else {
-            Log.e(TAG, "网上抓取市");
+            Log.d(TAG, "网上抓取市");
             int provinceCode = selectedProvince.getProvinceCode();
             String address = "http://guolin.tech/api/china/" + provinceCode;
             queryFromrServer(address, "city");
@@ -178,17 +178,16 @@ public class ChooseAreaFragment extends Fragment {
         backButton.setVisibility(View.GONE);
         provinceList = DataSupport.findAll(Province.class);
         if (provinceList.size() > 0) {
-            Log.e(TAG, "从数据库queryProvinces: ");
             dataList.clear();
             for (Province province : provinceList) {
-                //Log.e(TAG, "queryProvinces: " + province.toString());
+                Log.d(TAG, "从数据库queryProvinces:"+province);
                 dataList.add(province.getProvinceName());
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
         } else {
-            Log.e(TAG, "网上抓取省份");
+            Log.d(TAG, "网上抓取省份");
             String address = "http://guolin.tech/api/china";
             queryFromrServer(address, "province");
         }
@@ -205,7 +204,7 @@ public class ChooseAreaFragment extends Fragment {
         HttpUtils.sendOkHttpRequestWithGET(address, new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "网上获取数据失败");
+                Log.d(TAG, "网上获取数据失败");
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -220,13 +219,13 @@ public class ChooseAreaFragment extends Fragment {
                 String responseText = response.body().string();
                 boolean result = false;
                 if ("province".equals(type)) {
-                    Log.e(TAG, "解析返回的省信息");
+                    Log.d(TAG, "解析返回的省信息");
                     result = ParseJsonUtils.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
-                    Log.e(TAG, "解析返回的市信息");
+                    Log.d(TAG, "解析返回的市信息");
                     result = ParseJsonUtils.handleCityResponse(responseText, selectedProvince.getId());
                 } else if ("county".equals(type)) {
-                    Log.e(TAG, "解析返回的县信息");
+                    Log.d(TAG, "解析返回的县信息");
                     result = ParseJsonUtils.handleCountyResponse(responseText, selectedCity.getId());
                 }
                 if (result) {

@@ -19,6 +19,8 @@ public class HttpUtils {
                 .url(address)
                 .build();
         client.newCall(request).enqueue(callback);
+        //OkHttp在enqueue()方法的内部已经帮我们开好了子线程，会在子线程中去执行HTTP请求。
+        // 而execute（）方法没有开启线程，因此使用时一般需要开启一个线程来执行sendOkHttpRequestWithGET()中的HTTP请求
     }
 
 
