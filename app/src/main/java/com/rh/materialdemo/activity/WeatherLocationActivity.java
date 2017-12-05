@@ -16,7 +16,7 @@ public class WeatherLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_location);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(WeatherLocationActivity.this);
-        if (preferences.getString("weather", null) != null) {
+        if (preferences.getString("weather_id", null) != null) {
             Intent intent_weather = new Intent(WeatherLocationActivity.this, WeatherActivity.class);
             startActivity(intent_weather);
             finish();

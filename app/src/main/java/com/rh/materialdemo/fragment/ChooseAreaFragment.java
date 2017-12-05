@@ -3,7 +3,9 @@ package com.rh.materialdemo.fragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,11 +18,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rh.materialdemo.MainActivity;
 import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.activity.WeatherActivity;
+import com.rh.materialdemo.activity.WeatherLocationActivity;
 import com.rh.materialdemo.db.City;
 import com.rh.materialdemo.db.County;
 import com.rh.materialdemo.db.Province;
@@ -30,6 +34,8 @@ import org.litepal.crud.DataSupport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -100,10 +106,26 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id", weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    //将weather_id存入SharedPreferences，一遍在WeatherLocationActivity中通过weather_id判断是否获取了地址信息，若是，直接进入WeatherActivity
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                    editor.putString("weather_id", weatherId);
+                    editor.apply();
+                    //instanceof关键字可以用来判断一个对象是否属于某个类的实例
+                    if (getActivity() instanceof WeatherLocationActivity) {
+                       /* Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);*/
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                        Log.d(TAG, "碎片在WeatherLocationActivity");
+                    } else if (getActivity() instanceof WeatherActivity) {
+                        WeatherActivity weatherActivity = (WeatherActivity) getActivity();
+                        weatherActivity.drawerLayout.closeDrawers();
+                        weatherActivity.swipeRefreshLayout.setRefreshing(true);
+                        weatherActivity.requestWeather(weatherId);
+                        Log.d(TAG, "碎片在WeatherActivity");
+                    }
                 }
             }
         });
