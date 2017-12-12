@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.rh.materialdemo.MainActivity;
 import com.rh.materialdemo.R;
+import com.rh.materialdemo.service.AutoUpdateService;
 
 public class WeatherLocationActivity extends AppCompatActivity {
 
@@ -15,6 +16,13 @@ public class WeatherLocationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_location);
+
+        /*开启后台自动更新天气服务*/
+        if (true){
+            Intent intent = new Intent(this, AutoUpdateService.class);
+            startService(intent);
+        }
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(WeatherLocationActivity.this);
         if (preferences.getString("weather_id", null) != null) {
             Intent intent_weather = new Intent(WeatherLocationActivity.this, WeatherActivity.class);

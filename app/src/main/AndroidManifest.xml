@@ -35,7 +35,12 @@
         <activity
             android:name=".activity.WeatherActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.WeatherLocationActivity"></activity>
+        <activity android:name=".activity.WeatherLocationActivity" />
+
+        <service
+            android:name=".service.AutoUpdateService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
     private List<Picture> pictureList = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         initPicture();//初始化图片
         initRecyclerView();//初始化控件
         initSwipeRefresh();//初始化刷新控件
+        Log.e(TAG, "onCreate: " );
     }
 
     private void initSwipeRefresh() {
