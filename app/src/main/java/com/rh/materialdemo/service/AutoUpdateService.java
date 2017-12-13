@@ -40,10 +40,10 @@ public class AutoUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "服务onStartCommand");
-        updateWeather();
         updateBingPic();
+        updateWeather();
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour =  1 * 30 * 60 * 1000;
+        int anHour =  10 * 60 * 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, i, 0);
@@ -56,11 +56,12 @@ public class AutoUpdateService extends Service {
      * 更新必应每日一图
      */
     private void updateBingPic() {
-        String requestBinPic = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US";
+        String requestBinPic = "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1";
         HttpUtils.sendOkHttpRequestWithGET(requestBinPic, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
+                Log.d(TAG, "后台服务请求图片失败");
             }
 
             @Override
@@ -70,7 +71,7 @@ public class AutoUpdateService extends Service {
                     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
                     editor.putString("bing_pic", bingPic);
                     editor.apply();
-                    Log.d(TAG, "后台服务请求图片完成");
+                    Log.d(TAG, "后台服务请求图片完成"+bingPic);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -91,6 +92,7 @@ public class AutoUpdateService extends Service {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
+                    Log.d(TAG, "后台服务请求图片失败");
                 }
 
                 @Override
@@ -101,7 +103,7 @@ public class AutoUpdateService extends Service {
                         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
                         editor.putString("weather",responseText);
                         editor.apply();
-                        Log.d(TAG, "后台服务请求天气完成");
+                        Log.d(TAG, "后台服务请求天气完成"+responseText);
                     }
                 }
             });

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.rh.materialdemo.R;
+import com.rh.materialdemo.gson.BingDaily;
 
 /**
  * Created by RH on 2017/11/3.
@@ -27,8 +28,10 @@ public class PictureActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
-        String pictureName =getIntent().getStringExtra(NAME);
-        int pictureImageId =getIntent().getIntExtra(IMAGE_ID,0);
+        BingDaily bingDaily = (BingDaily) getIntent().getSerializableExtra("BingDaily_data");
+        String pictureName = bingDaily.getDate();
+        String pictureImageId = bingDaily.getUrl();
+        String words = bingDaily.getCopyright();
 
         Toolbar toolbar1 = (Toolbar) findViewById(R.id.toolbar1);
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_tool);
@@ -41,7 +44,7 @@ public class PictureActivity extends AppCompatActivity{
         }
         collapsingToolbar.setTitle(pictureName);
         Glide.with(this).load(pictureImageId).into(pictureImageView);
-        pictureContentText.setText(generayePictureContent(pictureName));
+        pictureContentText.setText(words);
     }
 
     private String generayePictureContent(String pictureName) {

@@ -22,47 +22,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.rh.materialdemo.Util.HttpUtils;
+import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.activity.ClientActivity;
 import com.rh.materialdemo.activity.ServerActivity;
 import com.rh.materialdemo.activity.WeatherActivity;
 import com.rh.materialdemo.activity.WeatherLocationActivity;
 import com.rh.materialdemo.adapter.PictureAdapter;
+import com.rh.materialdemo.bean.Diary;
 import com.rh.materialdemo.bean.Picture;
+import com.rh.materialdemo.gson.BingDaily;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
-    private List<Picture> pictureList = new ArrayList<>();
+    private List<BingDaily> bingDailyList = new ArrayList<>();
+    private List<Diary> pictureList = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
     private PictureAdapter pictureAdapter;
-    private Picture[] pictures = {
-            new Picture("2017-0801", R.mipmap.ic_20170801),
-            new Picture("2017-0802", R.mipmap.ic_20170802),
-            new Picture("2017-0803", R.mipmap.ic_20170803),
-            new Picture("2017-0804", R.mipmap.ic_20170804),
-            new Picture("2017-0805", R.mipmap.ic_20170808),
-            new Picture("2017-0806", R.mipmap.ic_20170809),
-            new Picture("2017-0807", R.mipmap.ic_20170810),
-            new Picture("2017-0808", R.mipmap.ic_20170812),
-            new Picture("2017-0809", R.mipmap.ic_20170813),
-            new Picture("2017-0810", R.mipmap.ic_20170814),
-            new Picture("2017-0811", R.mipmap.ic_20170815),
-            new Picture("2017-0812", R.mipmap.ic_20170816),
-            new Picture("2017-0813", R.mipmap.ic_20170817),
-            new Picture("2017-0814", R.mipmap.ic_20170818),
-            new Picture("2017-0815", R.mipmap.ic_20170819),
-            new Picture("2017-0816", R.mipmap.ic_20170820),
-            new Picture("2017-0817", R.mipmap.ic_20170821),
-            new Picture("2017-0818", R.mipmap.ic_20170822),
-            new Picture("2017-0819", R.mipmap.ic_20170823),
-            new Picture("2017-0820", R.mipmap.ic_20170826)
-
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +64,11 @@ public class MainActivity extends AppCompatActivity {
         }
         initNavigationView();//初始化滑动菜单布局
         initFloatingActionButton();//初始化悬浮按钮
-
-        initPicture();//初始化图片
         initRecyclerView();//初始化控件
+        initPicture(8);//初始化图片
         initSwipeRefresh();//初始化刷新控件
-        Log.e(TAG, "onCreate: " );
+
+        Log.e(TAG, "onCreate: ");
     }
 
     private void initSwipeRefresh() {
@@ -102,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                initPicture();
-                                pictureAdapter.notifyDataSetChanged();
+                                initPicture(8);
                                 swipeRefreshLayout.setRefreshing(false);
                             }
                         });
@@ -113,20 +98,55 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initPicture() {
+    private void initPicture(int number) {
         pictureList.clear();
-        for (int i = 0; i < pictures.length; i++) {
-            Random random = new Random();
-            int index = random.nextInt(pictures.length);
-            pictureList.add(pictures[index]);
-        }
+        String bingPictureUrl = "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=" + number;
+        HttpUtils.sendOkHttpRequestWithGET(bingPictureUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "获取图片失败，请检查网络状态", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final List<BingDaily> bingList = ParseJsonUtils.handleBingPicResponseWithGson(response.body().string());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FreshPicture(bingList);//刷新
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 刷新RecyclerView
+     *
+     * @param nowList
+     */
+    private void FreshPicture(List<BingDaily> nowList) {
+        bingDailyList.clear();
+        bingDailyList.addAll(nowList);//list集合不能变，变了之后就用下面注释代码，重新绑定Adapter
+        /*bingDailyList = nowList;
+        pictureAdapter = new PictureAdapter(bingDailyList);
+        recyclerView.setAdapter(pictureAdapter);*/
+        pictureAdapter.notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
-        pictureAdapter = new PictureAdapter(pictureList);
+       /* bingDailyList.add(new BingDaily("111","https://www.bing.com/az/hprichbg/rb/Snow_ZH-CN11178898651_1920x1080.jpg"));
+        bingDailyList.add(new BingDaily("222","https://www.bing.com/az/hprichbg/rb/Snow_ZH-CN11178898651_1920x1080.jpg"));
+        bingDailyList.add(new BingDaily("333","https://www.bing.com/az/hprichbg/rb/Snow_ZH-CN11178898651_1920x1080.jpg"));*/
+        pictureAdapter = new PictureAdapter(bingDailyList);
         recyclerView.setAdapter(pictureAdapter);
     }
 

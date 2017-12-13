@@ -154,7 +154,7 @@ public class WeatherActivity extends AppCompatActivity {
      * j加载必应每日一图
      */
     private void loadBingPic() {
-        String requestBinPic = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US";
+        String requestBinPic = "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1";
         HttpUtils.sendOkHttpRequestWithGET(requestBinPic, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
