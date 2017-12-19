@@ -1,5 +1,14 @@
 package com.rh.materialdemo.Util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -37,5 +46,47 @@ public class HttpUtils {
                 .build();
         client.newCall(request).enqueue(callback);
     }
+
+    public static void sendHttpRequest(final String address, final HttpCallbackListener listener){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    URL url = new URL(address);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(8000);
+                    connection.setReadTimeout(8000);
+                    connection.setDoInput(true);
+                    //connection.setDoOutput(true);//get请求并不需要设置，设置将导致请求以post方式提交,部分接口可能无法使用，即使设置了connection.setRequestMethod("GET")也无用（如每日一文接口）;
+                    InputStream in = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null){
+                        response.append(line);
+                    }
+
+                    if (listener != null){
+                        //回调onFinish()方法
+                        listener.onFinish(response.toString());
+                    }
+
+                } catch (Exception e) {
+                    //回调onError()fangfa
+                    if (listener != null){
+                        listener.onError(e);
+                    }
+                }finally {
+                    if (connection != null){
+                        connection.disconnect();
+                    }
+                }
+            }
+        }).start();
+
+    }
+
 
 }

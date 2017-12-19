@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.activity.ClientActivity;
+import com.rh.materialdemo.activity.DownloadActivity;
 import com.rh.materialdemo.activity.ServerActivity;
 import com.rh.materialdemo.activity.WeatherActivity;
 import com.rh.materialdemo.activity.WeatherLocationActivity;
@@ -190,7 +191,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MyApplication.getContext(), "You clicked nav_location", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.nav_mail:
-                        Toast.makeText(MyApplication.getContext(), "You clicked nav_mail", Toast.LENGTH_SHORT).show();
+                        Intent intent_download = new Intent(MainActivity.this, DownloadActivity.class);
+                        startActivity(intent_download);
                         break;
                     default:
                         break;
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             //HomeAsUp按钮的id永远是android.R.id.home
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);//打开隐藏的菜单栏，NavigationView
                 break;
             default:
         }

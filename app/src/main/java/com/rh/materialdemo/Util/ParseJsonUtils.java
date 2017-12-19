@@ -11,6 +11,7 @@ import com.rh.materialdemo.db.County;
 import com.rh.materialdemo.db.Province;
 import com.rh.materialdemo.gson.BingDaily;
 import com.rh.materialdemo.gson.BingList;
+import com.rh.materialdemo.gson.DailyArticle;
 import com.rh.materialdemo.gson.Weather;
 
 import org.json.JSONArray;
@@ -153,11 +154,20 @@ public class ParseJsonUtils {
      */
     public static List<BingDaily> handleBingPicResponseWithGson(String string) {
         Gson gson = new Gson();
-         BingList bingList = gson.fromJson(string,BingList.class);//需要解析的是一个对象
-       /* for (BingDaily bingDaily : bingList.bingDailies){
+         BingList bingList = gson.fromJson(string,BingList.class);//需要解析的是一个数组对象
+        /*for (BingDaily bingDaily : bingList.bingDailies){
             Log.e(TAG, "解析必应图片数组: " + bingDaily.getDate());
             Log.e(TAG, "解析必应图片数组: " + bingDaily.getUrl());
         }*/
         return bingList.bingDailies;
     }
+
+    public static DailyArticle handleDailyArticle(String response) throws JSONException {
+        JSONObject jsonObject = new JSONObject(response);
+        String data =jsonObject.getString("data");
+        Gson gson = new Gson();
+        DailyArticle dailyArticle = gson.fromJson(data,DailyArticle.class);
+        return dailyArticle;
+    }
+
 }

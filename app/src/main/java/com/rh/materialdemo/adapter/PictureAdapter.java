@@ -72,9 +72,9 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         BingDaily picture = mPictureList.get(position);
-        Log.e(TAG, "onBindViewHolder: "+picture.getDate());
+       // Log.e(TAG, "onBindViewHolder: "+picture.getDate());
         holder.pictureName.setText(picture.getDate());
-        Log.e(TAG, "onBindViewHolder: "+picture.getUrl());
+       // Log.e(TAG, "onBindViewHolder: "+picture.getUrl());
         Glide.with(mContext).load(picture.getUrl()).into(holder.pictureImage);
 
     }

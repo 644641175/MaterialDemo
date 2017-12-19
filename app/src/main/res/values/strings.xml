@@ -12,4 +12,5 @@
     <string name="client_text_weather_content">多云</string>
     <string name="client_text_location">地点：</string>
     <string name="client_text_location_content">湖北省武汉市XX区XXXXXXXX</string>
+    <string name="title_activity_download">DownloadActivity</string>
 </resources>
