@@ -21,14 +21,17 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
- * Created by RH on 2017/11/9.
+ * @author RH
+ * @date 2017/11/9
  */
 
 public class ParseJsonUtils {
 
     private static final String TAG = "ParseJsonUtils";
 
-    //使用GSON开源库来解析json
+    /**
+     * 使用GSON开源库来解析json
+     */
     public static void parseJSONWithGSON(String jsonData) {
         Gson gson = new Gson();
         List<Diary> diaryList = gson.fromJson(jsonData, new TypeToken<List<Diary>>() {
@@ -83,7 +86,7 @@ public class ParseJsonUtils {
                     city.setCityName(cityObject.getString("name"));
                     city.setProvinceId(provinceId);
                     city.save();
-                    Log.d(TAG, "保存市信息到数据库: "+city.toString());
+                    Log.d(TAG, "保存市信息到数据库: " + city.toString());
                 }
                 return true;
             } catch (JSONException e) {
@@ -107,7 +110,7 @@ public class ParseJsonUtils {
                     county.setCountyName(countyObject.getString("name"));
                     county.setCityId(cityId);
                     county.save();
-                    Log.d(TAG, "保存县信息到数据库: "+county.toString());
+                    Log.d(TAG, "保存县信息到数据库: " + county.toString());
                 }
                 return true;
             } catch (JSONException e) {
@@ -121,12 +124,12 @@ public class ParseJsonUtils {
      * 将返回的JSON数据解析成Weather实体类
      */
 
-    public static Weather handleWeatherResponse(String response){
+    public static Weather handleWeatherResponse(String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
             String weatherContent = jsonArray.getJSONObject(0).toString();
-            return new Gson().fromJson(weatherContent,Weather.class);
+            return new Gson().fromJson(weatherContent, Weather.class);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -135,26 +138,21 @@ public class ParseJsonUtils {
 
     /**
      * 解析必应返回的图片消息
-     * @param response
-     * @return
-     * @throws JSONException
      */
     public static String handleBingPicResponse(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
-       // JSONObject jsonObject1 = jsonObject.getJSONObject("tooltips");
         JSONArray jsonArray = jsonObject.getJSONArray("images");
         JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-        String url_Pic = jsonObject1.getString("url");
-        return url_Pic;
+        return jsonObject1.getString("url");
     }
 
     /**
      * 解析必应图片数组
-     * @param string
      */
     public static List<BingDaily> handleBingPicResponseWithGson(String string) {
         Gson gson = new Gson();
-         BingList bingList = gson.fromJson(string,BingList.class);//需要解析的是一个数组对象
+        //需要解析的是一个数组对象
+        BingList bingList = gson.fromJson(string, BingList.class);
         /*for (BingDaily bingDaily : bingList.bingDailies){
             Log.e(TAG, "解析必应图片数组: " + bingDaily.getDate());
             Log.e(TAG, "解析必应图片数组: " + bingDaily.getUrl());
@@ -164,9 +162,9 @@ public class ParseJsonUtils {
 
     public static DailyArticle handleDailyArticle(String response) throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
-        String data =jsonObject.getString("data");
+        String data = jsonObject.getString("data");
         Gson gson = new Gson();
-        DailyArticle dailyArticle = gson.fromJson(data,DailyArticle.class);
+        DailyArticle dailyArticle = gson.fromJson(data, DailyArticle.class);
         return dailyArticle;
     }
 

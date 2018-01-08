@@ -8,23 +8,20 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.ParseJsonUtils;
-import com.rh.materialdemo.activity.WeatherActivity;
 import com.rh.materialdemo.gson.Weather;
-
 import org.json.JSONException;
-
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+/**
+ * @author RH
+ */
 public class AutoUpdateService extends Service {
     private static final String TAG = "AutoUpdateService";
 
@@ -47,6 +44,7 @@ public class AutoUpdateService extends Service {
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, i, 0);
+        assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pendingIntent);
         return super.onStartCommand(intent, flags, startId);
@@ -59,13 +57,13 @@ public class AutoUpdateService extends Service {
         String requestBinPic = "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1";
         HttpUtils.sendOkHttpRequestWithGET(requestBinPic, new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "后台服务请求图片失败");
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 try {
                     String bingPic = "https://www.bing.com" + ParseJsonUtils.handleBingPicResponse(response.body().string());
                     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
@@ -96,7 +94,7 @@ public class AutoUpdateService extends Service {
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     String responseText = response.body().string();
                     Weather weather = ParseJsonUtils.handleWeatherResponse(responseText);
                     if (weather !=null &&"ok".equals(weather.status)){

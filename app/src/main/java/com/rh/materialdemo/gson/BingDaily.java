@@ -5,14 +5,16 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
- * Created by RH on 2017/12/13.
+ *
+ * @author RH
+ * @date 2017/12/13
  */
 
 public class BingDaily implements Serializable{
     @SerializedName("startdate")
     public String date;
-    public String url;
-    public String copyright;
+    private String url;
+    private String copyright;
 
     public BingDaily(String date, String url) {
         this.date = date;

@@ -1,7 +1,5 @@
 package com.rh.materialdemo.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,20 +11,16 @@ import android.text.Html;
 import android.text.SpannedString;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
-
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.ActivityCollector;
 import com.rh.materialdemo.adapter.MessageAdapter;
 import com.rh.materialdemo.bean.ChatMessage;
 import com.rh.materialdemo.service.WebSocketService;
-
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +60,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             //stopService(webSocketService);
             super.onDestroy();
             Log.e(TAG, "onDestroy: ");
-            /**一定要置为空，释放掉对Handler的引用，否则ChatActivity的Handler无法释放掉，下次就无法再次进行绑定（布局中无法再加载消息）*/
+            /*一定要置为空，释放掉对Handler的引用，否则ChatActivity的Handler无法释放掉，下次就无法再次进行绑定（布局中无法再加载消息）*/
             WebSocketService.mMessenger = null;
         }
 
@@ -146,11 +140,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
          // 这样会导致MainActivity的上下文及资源无法被回收，引发内存泄露的情况发生
          * */
 
-        public static class MyHandler extends Handler {
+        private static class MyHandler extends Handler {
             /**Activity的弱引用*/
             private WeakReference<ChatActivity> mActivity;
 
-            public MyHandler(ChatActivity activity) {
+            private MyHandler(ChatActivity activity) {
                 mActivity = new WeakReference<>(activity);
             }
 
@@ -158,7 +152,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             public void handleMessage(Message msg) {
                     // ChatActivity activity = mActivity.get();
                     if (mActivity.get() != null) {
-                        Log.e(TAG, "ChatActivity不为空: ");
                         switch (msg.what) {
                             case 0x0001:
                                 if (ActivityCollector.isActivityExist(ChatActivity.class)) {

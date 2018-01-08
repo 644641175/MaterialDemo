@@ -19,12 +19,9 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.rh.materialdemo.MainActivity;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.ActivityCollector;
 import com.rh.materialdemo.activity.ChatActivity;
-
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
 import de.tavendo.autobahn.WebSocketHandler;
@@ -36,7 +33,6 @@ import de.tavendo.autobahn.WebSocketOptions;
 public class WebSocketService extends Service {
     private static final String TAG = "WebSocketService";
     public static WebSocketConnection webSocketConnection;
-    private static String webSocketHost = "ws://10.203.147.113:8080/MyServlet/WebSocketCommunication";
     private static WebSocketOptions options = new WebSocketOptions();
     private BroadcastReceiver connectionReceiver;
     private static boolean isClosed = true;
@@ -50,7 +46,7 @@ public class WebSocketService extends Service {
         }
 
         webSocketConnect();
-        MonitorNetworkStatus();
+        monitorNetworkStatus();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -80,6 +76,7 @@ public class WebSocketService extends Service {
         }
         if (!webSocketConnection.isConnected()) {
             try {
+                String webSocketHost = "ws://10.203.147.113:8080/MyServlet/WebSocketCommunication";
                 webSocketConnection.connect(webSocketHost, new WebSocketHandler() {
                     //websocket启动时候的回调
                     @Override
@@ -154,12 +151,13 @@ public class WebSocketService extends Service {
         }
     }
 
-    private void MonitorNetworkStatus() {
+    private void monitorNetworkStatus() {
         if (connectionReceiver == null) {
             connectionReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+                    assert connectivityManager != null;
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
                     if (networkInfo == null || !networkInfo.isAvailable()) {
@@ -189,14 +187,17 @@ public class WebSocketService extends Service {
     private Notification getNotification(String contentText) {
         Intent intent = new Intent(this, ChatActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
-        Notification builder = new NotificationCompat.Builder(this)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.mipmap.message)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.message))
-                .setFullScreenIntent(pi, false)
-                .setContentTitle("新消息提醒")
-                .setContentText(contentText)
-                .build();
+        Notification builder = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder = new NotificationCompat.Builder(this)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setSmallIcon(R.mipmap.message)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.mipmap.message))
+                    .setFullScreenIntent(pi, false)
+                    .setContentTitle("新消息提醒")
+                    .setContentText(contentText)
+                    .build();
+        }
         return builder;
     }
 

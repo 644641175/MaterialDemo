@@ -10,22 +10,23 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
-
 import com.rh.materialdemo.MainActivity;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.DownloadListener;
 import com.rh.materialdemo.Util.DownloadTask;
-
 import java.io.File;
-import java.io.InputStream;
 
+/**
+ * @author RH
+ */
 public class DownloadService extends Service {
     private DownloadTask downloadTask;
     private String downloadUrl;
     private DownloadListener listener = new DownloadListener() {
         @Override
         public void onProcess(int progress) {
-            getNotificationManager().notify(1, getNotification("下载中...", progress));//触发下载进度的通知
+            //触发下载进度的通知
+            getNotificationManager().notify(1, getNotification("下载中...", progress));
         }
 
         @Override
@@ -75,7 +76,8 @@ public class DownloadService extends Service {
                 downloadUrl = url;
                 downloadTask = new DownloadTask(listener);
                 downloadTask.execute(downloadUrl);
-                startForeground(1, getNotification("下载准备中...", 0));//在系统状态栏中创建一个持续运行的通知
+                //在系统状态栏中创建一个持续运行的通知
+                startForeground(1, getNotification("下载准备中...", 0));
                 Toast.makeText(DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
             }
         }
@@ -113,9 +115,6 @@ public class DownloadService extends Service {
     /**
      * 更改系统状态栏的下载通知
      *
-     * @param title
-     * @param progress
-     * @return
      */
     private Notification getNotification(String title, int progress) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -127,7 +126,8 @@ public class DownloadService extends Service {
         if (progress > 0) {
             //当progress大于或等于0时才需要显示下载进度
             builder.setContentText(progress + "%");
-            builder.setProgress(100, progress, false);//（"通知的最大进度","通知的当前进度","是否使用模糊进度条"）
+            //通知的最大进度,通知的当前进度,是否使用模糊进度条
+            builder.setProgress(100, progress, false);
         }
         return builder.build();
     }

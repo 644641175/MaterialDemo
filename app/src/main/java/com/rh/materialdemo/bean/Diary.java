@@ -3,10 +3,12 @@ package com.rh.materialdemo.bean;
 import java.io.Serializable;
 
 /**
- * Created by RH on 2017/11/7.
+ * @author RH
+ * @date 2017/11/7
+ * <p>
+ * <p>
+ * Serializable序列化，将对象转换成可存储或可传输的状态
  */
-
-//Serializable序列化，将对象转换成可存储或可传输的状态
 public class Diary implements Serializable {
     private String date;
     private String weather;

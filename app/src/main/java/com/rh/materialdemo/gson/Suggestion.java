@@ -3,9 +3,12 @@ package com.rh.materialdemo.gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by RH on 2017/11/16.
+ *
+ * @author RH
+ * @date 2017/11/16
+ *
+ * 需要解析一个"daily_forecast"数组，Suggestion为数组中的一项
  */
-/*需要解析一个"daily_forecast"数组，Suggestion为数组中的一项*/
 public class Suggestion {
     @SerializedName("comf")
     public Comfort comfort;

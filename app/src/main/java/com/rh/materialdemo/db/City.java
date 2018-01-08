@@ -3,9 +3,11 @@ package com.rh.materialdemo.db;
 import org.litepal.crud.DataSupport;
 
 /**
- * Created by RH on 2017/11/15.
+ * @author RH
+ * @date 2017/11/15
+ * <p>
+ * 对数据库进行CRUD（增、删、改）操作时必须要继承DataSupport
  */
-//对数据库进行CRUD（增、删、改）操作时必须要继承DataSupport
 public class City extends DataSupport {
     private int id;
     private String cityName;
@@ -34,10 +36,6 @@ public class City extends DataSupport {
 
     public void setCityCode(int cityCode) {
         this.cityCode = cityCode;
-    }
-
-    public int getProvinceId() {
-        return provinceId;
     }
 
     public void setProvinceId(int provinceId) {

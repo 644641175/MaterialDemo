@@ -2,6 +2,7 @@ package com.rh.materialdemo.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,6 +45,8 @@ import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
+ *
+ * @author RH
  */
 public class ChatLoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "ChatActivity";
@@ -64,13 +67,10 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
      */
     private UserLoginTask mAuthTask = null;
 
-    // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private CheckBox mCheckBox;
-    private Button mbutton_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,40 +81,29 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
         populateAutoComplete();//请求获取通讯录
 
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
+            return false;
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        mEmailSignInButton.setOnClickListener(view -> attemptLogin());
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        mCheckBox = (CheckBox) findViewById(R.id.checkbox_remember);
+        CheckBox mCheckBox = (CheckBox) findViewById(R.id.checkbox_remember);
         mCheckBox.setOnCheckedChangeListener(this);
 
-        mbutton_login = (Button) findViewById(R.id.button_login);
-        mbutton_login.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        Button mButtonLogin = (Button) findViewById(R.id.button_login);
+        mButtonLogin.setOnClickListener(v -> {
 
-            }
         });
 
-        readaccount();
+        readAccount();
     }
 
     @Override
@@ -123,7 +112,8 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
         if (isChecked) {
             //sharedpreferance非常适合保存零散的简单的数据，这里使用它来保存用户名和密码
             //路径data/data/……
-            SharedPreferences sp = getSharedPreferences("info", MODE_PRIVATE);//设置属性，90%为私有
+            //设置属性，90%为私有
+            SharedPreferences sp = getSharedPreferences("info", MODE_PRIVATE);
             //拿到SharedPreferences的编辑器
             SharedPreferences.Editor ed = sp.edit();
             //将数据放入
@@ -132,14 +122,17 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
             ed.putString("password", mPasswordView.getText().toString());
             Log.e(TAG, "password: " + mPasswordView.getText().toString());
             //最后记得提交
-            ed.commit();
+            ed.apply();
         }
 
     }
 
-    //读取存储的用户信息
-    private void readaccount() {
-        SharedPreferences sp = getSharedPreferences("info", MODE_PRIVATE);//90%为私有
+    /**
+     * 读取存储的用户信息
+     */
+    private void readAccount() {
+        //90%为私有
+        SharedPreferences sp = getSharedPreferences("info", MODE_PRIVATE);
         String name = sp.getString("name", "");
         Log.e(TAG, "readaccount: " + name);
         String password = sp.getString("password", "");
@@ -153,10 +146,13 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
         if (!mayRequestContacts()) {
             return;
         }
-        getLoaderManager().initLoader(0, null, this);//初始化一个基于LoaderManager的异步查询操作。
+        //初始化一个基于LoaderManager的异步查询操作。
+        getLoaderManager().initLoader(0, null, this);
     }
 
-    //使用时请求通讯录权限
+    /**
+     * 使用时请求通讯录权限
+     */
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -166,13 +162,7 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
+                    .setAction(android.R.string.ok, v -> requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS));
         } else {
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }
@@ -242,14 +232,18 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
         }
     }
 
-    //判断账号是否合乎规则
+    /**
+     * 判断账号是否合乎规则
+     */
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
         //return email.length() < 20;
     }
 
-    //判断密码是否合乎规则
+    /**
+     * 判断密码是否合乎规则
+     */
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
@@ -258,6 +252,7 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
     /**
      * Shows the progress UI and hides the login form.
      */
+    @SuppressLint("ObsoleteSdkInt")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // 在Honeycomb MR2上，我们有ViewPropertyAnimator APIs，它允许非常简单的动画。 如果可用，请使用这些API淡入进度微调器。
@@ -304,7 +299,7 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
 
         @Override
         protected Integer doInBackground(Void... params) {
-            /**不能在doInBackground中更新UI*/
+            //不能在doInBackground中更新UI
             try {
                 // 模拟网络访问。
                 Thread.sleep(500);
@@ -410,7 +405,6 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
 

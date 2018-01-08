@@ -1,7 +1,9 @@
 package com.rh.materialdemo.Util;
 
 /**
- * Created by RH on 2017/12/19.
+ *
+ * @author RH
+ * @date 2017/12/19
  */
 
 public interface DownloadListener {

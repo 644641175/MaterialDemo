@@ -3,7 +3,9 @@ package com.rh.materialdemo.gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by RH on 2017/11/16.
+ *
+ * @author RH
+ * @date 2017/11/16
  */
 
 public class Forecast {

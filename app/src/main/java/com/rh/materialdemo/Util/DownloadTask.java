@@ -13,15 +13,17 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by RH on 2017/12/19.
+ *
+ * @author RH
+ * @date 2017/12/19
  */
 
 public class DownloadTask extends AsyncTask<String, Integer, Integer> {
 
-    public static final int TYPE_SUCCESS = 0;
-    public static final int TYPE_FAILED = 1;
-    public static final int TYPE_PAUSED = 2;
-    public static final int TYPE_CANCELED = 3;
+    private static final int TYPE_SUCCESS = 0;
+    private static final int TYPE_FAILED = 1;
+    private static final int TYPE_PAUSED = 2;
+    private static final int TYPE_CANCELED = 3;
 
     private DownloadListener listener;
     private boolean isCanceled = false;
@@ -38,15 +40,18 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         RandomAccessFile savedFile = null;
         File file = null;
         try {
-            long downloadedLength = 0; //记录已下载的文件长度
+            //记录已下载的文件长度
+            long downloadedLength = 0;
             String downloadUrl = strings[0];
             String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
-            String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//SD卡的Download目录
+            //SD卡的Download目录
+            String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
             file = new File(directory + fileName);
             if (file.exists()) {
                 downloadedLength = file.length();
             }
-            long contentLength = getContentLength(downloadUrl);//获取要下载的文件的长度
+            //获取要下载的文件的长度
+            long contentLength = getContentLength(downloadUrl);
             if (contentLength == 0) {
                 return TYPE_FAILED;
             } else if (contentLength == downloadedLength) {
@@ -57,14 +62,17 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     //断点下载，指定从哪个字节开始下载
-                    .addHeader("RANGE", "byte=" + downloadedLength + "-")//header用于告诉服务器我们想要从哪个字节开始下载
+                    //header用于告诉服务器我们想要从哪个字节开始下载
+                    .addHeader("RANGE", "byte=" + downloadedLength + "-")
                     .url(downloadUrl)
                     .build();
             Response response = client.newCall(request).execute();
             if (response != null) {
-                is = response.body().byteStream();//获取输入流
+                //获取输入流
+                is = response.body().byteStream();
                 savedFile = new RandomAccessFile(file, "rw");
-                savedFile.seek(downloadedLength); //跳过已下载的字节
+                //跳过已下载的字节
+                savedFile.seek(downloadedLength);
                 byte[] b = new byte[1024];
                 int total = 0;
                 int len;

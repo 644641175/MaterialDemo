@@ -3,7 +3,9 @@ package com.rh.materialdemo.db;
 import org.litepal.crud.DataSupport;
 
 /**
- * Created by RH on 2017/11/14.
+ *
+ * @author RH
+ * @date 2017/11/14
  */
 
 public class Province extends DataSupport {
