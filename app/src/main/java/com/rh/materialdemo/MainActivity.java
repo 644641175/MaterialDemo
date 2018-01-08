@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.ParseJsonUtils;
+import com.rh.materialdemo.activity.ChatActivity;
+import com.rh.materialdemo.activity.ChatLoginActivity;
 import com.rh.materialdemo.activity.ClientActivity;
 import com.rh.materialdemo.activity.DownloadActivity;
 import com.rh.materialdemo.activity.ServerActivity;
@@ -179,20 +181,20 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent_client = new Intent(MainActivity.this, ClientActivity.class);
                         startActivity(intent_client);
                         break;
-                    case R.id.nav_folder:
-                        Intent intent_server = new Intent(MainActivity.this, ServerActivity.class);
-                        startActivity(intent_server);
-                        break;
                     case R.id.nav_friend:
                         Intent intent_weather_location = new Intent(MainActivity.this, WeatherLocationActivity.class);
                         startActivity(intent_weather_location);
                         break;
-                    case R.id.nav_location:
-                        Toast.makeText(MyApplication.getContext(), "You clicked nav_location", Toast.LENGTH_SHORT).show();
-                        break;
                     case R.id.nav_mail:
                         Intent intent_download = new Intent(MainActivity.this, DownloadActivity.class);
                         startActivity(intent_download);
+                        break;
+                    case R.id.nav_location:
+                        Toast.makeText(MyApplication.getContext(), "You clicked nav_location", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.nav_folder:
+                        Intent intent_chat = new Intent(MainActivity.this, ChatLoginActivity.class);
+                        startActivity(intent_chat);
                         break;
                     default:
                         break;

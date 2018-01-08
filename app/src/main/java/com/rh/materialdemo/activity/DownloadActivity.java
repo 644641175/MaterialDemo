@@ -114,10 +114,11 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         switch (v.getId()) {
             case R.id.start_download:
                 String url = text_url.getText().toString();
-                if (url !=null && !url.equals(""))
-                downloadBinder.startDownload(url);
-                else
-                    Toast.makeText(DownloadActivity.this,"请输入下载链接",Toast.LENGTH_LONG).show();
+                if (url !=null && !url.equals("")) {
+                    downloadBinder.startDownload(url);
+                } else {
+                    Toast.makeText(DownloadActivity.this, "请输入下载链接", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.pause_download:
                 downloadBinder.pauseDownload();

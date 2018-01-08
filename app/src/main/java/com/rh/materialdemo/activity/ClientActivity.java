@@ -80,7 +80,7 @@ public class ClientActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //使用OkHttp
-                HttpUtils.sendOkHttpRequestWithGET("http://10.0.2.2:8080/TomcatTest/get_data.json", new okhttp3.Callback() {
+                HttpUtils.sendOkHttpRequestWithGET("http://10.203.147.113:8080/MyServlet/json/get_data.json", new okhttp3.Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         //在这里对异常情况进行处理
