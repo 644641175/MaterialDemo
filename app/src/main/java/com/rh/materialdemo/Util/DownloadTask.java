@@ -2,6 +2,7 @@ package com.rh.materialdemo.Util;
 
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +53,8 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
             }
             //获取要下载的文件的长度
             long contentLength = getContentLength(downloadUrl);
+            Log.e("DownloadTask", "doInBackground: 需要下载的数据长度为"+contentLength);
+            Log.e("DownloadTask", "doInBackground: 已下载的数据长度为"+downloadedLength);
             if (contentLength == 0) {
                 return TYPE_FAILED;
             } else if (contentLength == downloadedLength) {
@@ -63,7 +66,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
             Request request = new Request.Builder()
                     //断点下载，指定从哪个字节开始下载
                     //header用于告诉服务器我们想要从哪个字节开始下载
-                    .addHeader("RANGE", "byte=" + downloadedLength + "-")
+                    .addHeader("RANGE", "bytes=" + downloadedLength + "-")
                     .url(downloadUrl)
                     .build();
             Response response = client.newCall(request).execute();
@@ -90,6 +93,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
                     }
                 }
                 response.body().close();
+                Log.e("DownloadTask", "下载完成 " );
                 return TYPE_SUCCESS;
             }
         } catch (IOException e) {
