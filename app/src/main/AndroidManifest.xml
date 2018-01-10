@@ -46,7 +46,10 @@
         <activity
             android:name=".activity.WeatherActivity"
             android:theme="@style/AppTheme" />
+
         <activity android:name=".activity.WeatherLocationActivity" />
+
+        <activity android:name=".activity.CheckApkVersionActivity"/>
 
         <service
             android:name=".service.AutoUpdateService"
@@ -74,7 +77,20 @@
         <service
             android:name=".service.WebSocketService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+        </service>
+
+        <provider
+            android:authorities="com.rh.materialdemo.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"/>
+        </provider>
+
+
     </application>
 
 </manifest>

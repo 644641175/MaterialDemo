@@ -28,4 +28,5 @@
         completions."
     </string>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="doenload_permission_rationale">请求文件写入权限</string>
 </resources>

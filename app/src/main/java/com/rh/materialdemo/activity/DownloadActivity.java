@@ -68,6 +68,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         startService(intent);
         //绑定服务
         bindService(intent, connection, BIND_AUTO_CREATE);
+        //获取写入外部存储的权限
         if (ContextCompat.checkSelfPermission(DownloadActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(DownloadActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
