@@ -140,8 +140,10 @@ public class MainActivity extends AppCompatActivity {
     private void initNavigationView() {
         NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
         //将Call菜单项设置为默认选中
-        //navView.setCheckedItem(R.id.nav_call);
+       // navView.setCheckedItem(R.id.nav_call);
         navView.setNavigationItemSelectedListener(item -> {
+            //不显示选中效果
+            //item.setCheckable(false);
             switch (item.getItemId()) {
                 case R.id.nav_call:
                     Intent intentClient = new Intent(MainActivity.this, ClientActivity.class);
@@ -156,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intentDownload);
                     break;
                 case R.id.nav_location:
-                    //Toast.makeText(MyApplication.getContext(), "You clicked nav_location", Toast.LENGTH_SHORT).show();
                     Intent intentUpdateApk = new Intent(MainActivity.this, CheckApkVersionActivity.class);
                     startActivity(intentUpdateApk);
                     break;
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     break;
             }
+            //隐藏左侧菜单栏,NavigationView
             mDrawerLayout.closeDrawers();
             return true;
         });

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/ic_20170804"
+    android:background="@mipmap/landscape"
     android:gravity="center_horizontal" >
 
     <TextView
@@ -28,21 +28,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="207dp"
+        android:layout_marginTop="50dp"
         android:gravity="center"
         android:text="欢迎"
         android:textColor="#fff"
         android:textSize="50sp" />
 
     <TextView
-        android:textColor="#220000"
+        android:textColor="#ffffff"
         android:visibility="invisible"
         android:id="@+id/tv_pro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressBar"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="95dp"
+        android:layout_marginBottom="100dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

@@ -1,11 +1,22 @@
 package com.rh.materialdemo;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+
 import com.rh.materialdemo.Util.ActivityCollector;
+import com.rh.materialdemo.activity.DownloadActivity;
 import com.squareup.leakcanary.LeakCanary;
 import org.litepal.LitePalApplication;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  *
@@ -53,4 +64,6 @@ public class MyApplication extends Application {
         System.exit(0);
 
     }
+
+
 }

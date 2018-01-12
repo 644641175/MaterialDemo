@@ -25,12 +25,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="今日头条">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="今日头条"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".activity.PictureActivity"
@@ -49,7 +45,13 @@
 
         <activity android:name=".activity.WeatherLocationActivity" />
 
-        <activity android:name=".activity.CheckApkVersionActivity"/>
+        <activity android:name=".activity.CheckApkVersionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".service.AutoUpdateService"

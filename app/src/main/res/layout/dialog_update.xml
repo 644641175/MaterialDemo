@@ -5,7 +5,7 @@
         android:layout_height="150dip"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
-        android:background="#ffffffff"
+        android:background="@drawable/shape_dialog_background"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -24,6 +24,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="暂不更新"
+                android:textColor="#b4484141"
                 android:textSize="18sp" />
 
             <View
@@ -39,6 +40,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:text="立即下载"
+                android:textColor="#1d1c1c"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -59,9 +61,12 @@
             android:layout_marginRight="10dip"
             android:gravity="center"
             android:singleLine="true"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textColor="#1d1c1c"
+            />
 
         <TextView
+            android:id="@+id/dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -70,6 +75,7 @@
             android:gravity="center"
             android:singleLine="true"
             android:text="检测到有新版本，是否下载？"
+            android:textColor="#2e2b2b"
             android:textSize="18sp" />
 
     </RelativeLayout>

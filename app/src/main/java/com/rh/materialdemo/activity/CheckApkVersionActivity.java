@@ -1,39 +1,42 @@
 package com.rh.materialdemo.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.rh.materialdemo.MainActivity;
+import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.DownloadListener;
 import com.rh.materialdemo.Util.DownloadTask;
 import com.rh.materialdemo.Util.HttpUtils;
-import com.rh.materialdemo.dialog.CustomDialog;
+import com.rh.materialdemo.dialog.MyDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -44,7 +47,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
  * @author RH
  * @date 2018/1/9
  */
-public class CheckApkVersionActivity extends BaseActivity implements View.OnClickListener {
+public class CheckApkVersionActivity extends BaseActivity{
     private static final String TAG = "CheckApkVersionActivity";
     /**
      * 更新
@@ -67,27 +70,79 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
      * ID以标识WRITE_EXTERNAL_STORAGE权限请求。
      */
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    private static final int MY_PERMISSION_REQUEST_CODE = 1;
 
     private PackageInfo packageInfo;
-
     private String versionName;
     private int versionCode;
     private static String content;
-    private String url;
+    private static String url;
     private TextView tvPro;
-
     /**
      * 升级提示框
      */
-    private static CustomDialog updateDialog;
+    private MyDialog myDialog;
     private UpdateApkHandler mUpdateHandler = new UpdateApkHandler(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+         /*系统版本为Android5.0以上时 状态栏与布局融合*/
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_checkapkversion);
-        initView();
-        getJSON();
+        if (isFirstInstall()) {
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            editor.putBoolean("isFirstInstall", false);
+            editor.apply();
+            requestAllNeedPermissions();
+        } else {
+            initView();
+            getJSON();
+        }
+    }
+
+    public boolean isFirstInstall() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getBoolean("isFirstInstall", true);
+    }
+
+    /**
+     * 请求App所需的所有权限
+     */
+    private void requestAllNeedPermissions() {
+        boolean isAllGranted = checkPermissionAllGranted(
+                new String[]{
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }
+        );
+        if (!isAllGranted) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.READ_CONTACTS,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    },
+                    MY_PERMISSION_REQUEST_CODE
+            );
+        }
+    }
+
+    /**
+     * 检查是否拥有权限
+     */
+    private boolean checkPermissionAllGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                // 只要有一个权限没有被授予, 则直接返回 false
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -102,7 +157,6 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
         TextView tvVersion = (TextView) findViewById(R.id.tv_version);
         // 设置版本号
         tvVersion.setText("版本号：" + getAppVersion());
-
     }
 
     /**
@@ -135,10 +189,13 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
      */
     private void getJSON() {
         // 子线程访问，耗时操作
-        HttpUtils.sendOkHttpRequestWithGET("http://10.203.147.113:8080/MyServlet/update/update.json", new Callback() {
+        HttpUtils.sendOkHttpRequestWithGETWithConnectTimeOut("http://10.203.147.113:8080/MyServlet/update/update.json", new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Looper.prepare();
+                Toast.makeText(MyApplication.getContext(), "与服务器连接超时，请与服务器管理员联系！", Toast.LENGTH_LONG).show();
                 mUpdateHandler.sendEmptyMessage(IO_ERROR);
+                Looper.loop();
             }
 
             @Override
@@ -156,7 +213,9 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
                     // 版本判断
                     if (versionCode > getCode()) {
                         // 提示更新
-                        mUpdateHandler.sendEmptyMessage(UPDATE_YES);
+                        //mUpdateHandler.sendEmptyMessage(UPDATE_YES);
+                        //mUpdateHandler.post(() -> showUpdateDialog());
+                        mUpdateHandler.post(() -> mySelfDialog(content));
                     } else {
                         // 不更新，跳转到主页
                         mUpdateHandler.sendEmptyMessage(UPDATE_NO);
@@ -193,41 +252,20 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
     /**
      * 升级弹框
      */
-    private static void showUpdateDialog(CheckApkVersionActivity activity) {
-        updateDialog = new CustomDialog(activity, 0, 0, R.layout.dialog_update,
-                R.style.Theme_dialog, Gravity.CENTER, 0);
-        //如果他点击其他地方，不安装，我们就直接去
-        updateDialog.setOnCancelListener(dialog -> goHome(activity));
-        // 更新内容
-        TextView dialogUpdateContent = updateDialog.findViewById(R.id.dialog_update_content);
-        dialogUpdateContent.setText(content);
-        // 确定更新
-        TextView dialogConfirm = updateDialog.findViewById(R.id.dialog_confrim);
-        dialogConfirm.setOnClickListener(activity);
-        // 取消更新
-        TextView dialogCancel = updateDialog.findViewById(R.id.dialog_cancel);
-        dialogCancel.setOnClickListener(activity);
-        updateDialog.show();
-    }
-
-    /**
-     * 点击事件
-     */
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dialog_confrim:
-                updateDialog.dismiss();
-                downloadAPK(url);
-
-                break;
-            case R.id.dialog_cancel:
-                // 跳主页面
-                updateDialog.dismiss();
-                goHome(this);
-                break;
-            default:
-        }
+    private void mySelfDialog(String content){
+        MyDialog myDialog = new MyDialog(this);
+        myDialog.setTitle("检测到有新版本，是否下载？");
+        myDialog.setMessage(content);
+        myDialog.setYesOnclickListener("立即下载", () -> {
+            myDialog.dismiss();
+            downloadAPK(url);
+        });
+        myDialog.setNoOnClickListener("暂不更新", () -> {
+            myDialog.dismiss();
+            startActivity(new Intent(   CheckApkVersionActivity.this, MainActivity.class));
+            finish();
+        });
+        myDialog.show();
     }
 
     /**
@@ -239,7 +277,7 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
     }
 
     /**
-     * 请求写入SD卡的权限
+     * 如果未赋予权限的话，请求写入SD卡的权限
      */
     private boolean mayRequestSDCard() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -247,35 +285,45 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
         }
         if (checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             return true;
-        }
-        if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) {
-            Snackbar.make(tvPro, R.string.doenload_permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, v -> requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE));
         } else {
-            Log.e(TAG, "请求权限 ");
-             requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
         }
         return false;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "onRequestPermissionsResult:系统权限已获得，开始下载 ");
-                downloadAPK(url);
-            }
+        switch (requestCode) {
+            case REQUEST_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e(TAG, "onRequestPermissionsResult:系统权限已获得，开始下载 ");
+                    downloadAPK(url);
+                } else {
+                    tvPro.setText("用户权限拒绝，App更新失败！");
+                    tvPro.setTextColor(Color.rgb(255, 64, 129));
+                    new Handler().postDelayed(() -> {
+                        startActivity(new Intent(CheckApkVersionActivity.this, MainActivity.class));
+                            finish();
+                    }, 2000);
+                }
+                break;
+            case MY_PERMISSION_REQUEST_CODE:
+                initView();
+                getJSON();
+                break;
+            default:
         }
     }
 
     /**
      * 下载更新
      */
+    @SuppressLint("SetTextI18n")
     private void downloadAPK(String downloadUrl) {
         tvPro.setVisibility(View.VISIBLE);
         if (!mayRequestSDCard()) {
-            Log.e(TAG, "权限请求失败 ");
-            tvPro.setText( "获取写入外部存储器权限失败\n    请先赋予App该系统权限");
+            Log.e(TAG, "downloadAPK: 未获取下载权限");
             return;
         }
         String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
@@ -330,6 +378,7 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
 
     }
 
+
     public static class UpdateApkHandler extends Handler {
 
         private WeakReference<CheckApkVersionActivity> mActivity;
@@ -344,7 +393,7 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
             if (activity != null) {
                 switch (msg.what) {
                     case UPDATE_YES:
-                        showUpdateDialog(activity);
+                        //showUpdateDialog(activity);
                         break;
                     case UPDATE_NO:
                         Log.e(TAG, "Apk不需要更新: ");
@@ -355,7 +404,11 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
                         goHome(activity);
                         break;
                     case IO_ERROR:
-                        Toast.makeText(activity, "请检查网络", Toast.LENGTH_LONG).show();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         goHome(activity);
                         break;
                     default:
@@ -364,4 +417,22 @@ public class CheckApkVersionActivity extends BaseActivity implements View.OnClic
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (myDialog != null){
+            myDialog.dismiss();
+            myDialog = null;
+        }
+        finish();
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (myDialog != null){
+            myDialog.dismiss();
+            myDialog = null;
+        }
+        super.onDestroy();
+    }
 }

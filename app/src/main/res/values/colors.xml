@@ -11,4 +11,5 @@
     <color name="qqblue">#509EE1</color>
     <color name="qqblue_pressed">#2378D0</color>
     <color name="green">#41ff5d</color>
+    <color name="black">#000000</color>
 </resources>

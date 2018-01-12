@@ -64,7 +64,12 @@
         android:layout_gravity="start"
         app:menu="@menu/nav_menu"
         app:headerLayout="@layout/nav_header"
+        app:itemIconTint="@color/nav_itemicontint_selector"
+        app:itemTextColor="@color/nav_itemcextcolor_selector"
         />
-
+<!--    app:itemIconTint="@color/nav_itemicontint_selector"
+        app:itemTextColor="@color/nav_itemcextcolor_selector"
+        与item.setCheckable(false)相互配合.
+        当想显示选中效果的话可以删除itemIconTint和itemTextColor使用主题自带的选中效果-->
 
 </android.support.v4.widget.DrawerLayout>
