@@ -15,9 +15,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.ActivityCollector;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.adapter.MessageAdapter;
 import com.rh.materialdemo.bean.ChatMessage;
 import com.rh.materialdemo.service.WebSocketService;
@@ -109,7 +109,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                     }
                     break;
                 case R.id.content_chat_receive:
-                    Toast.makeText(this,"功能开发中，请关注后续更新！",Toast.LENGTH_LONG).show();
+                    MyToast.show("功能开发中，请关注后续更新！");
                     break;
                 default:
                     break;

@@ -18,9 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import com.rh.materialdemo.R;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.service.DownloadService;
 
 /**
@@ -97,7 +96,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "拒绝权限将无法下载", Toast.LENGTH_SHORT).show();
+                    MyToast.show("拒绝权限将无法下载");
                     finish();
                 }
                 break;
@@ -116,7 +115,7 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
                 if (!"".equals(url)) {
                     downloadBinder.startDownload(url);
                 } else {
-                    Toast.makeText(DownloadActivity.this, "请输入下载链接", Toast.LENGTH_LONG).show();
+                    MyToast.show("请输入下载链接");
                 }
                 break;
             case R.id.pause_download:

@@ -14,6 +14,8 @@ import com.rh.materialdemo.MainActivity;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.DownloadListener;
 import com.rh.materialdemo.Util.DownloadTask;
+import com.rh.materialdemo.Util.MyToast;
+
 import java.io.File;
 
 /**
@@ -35,7 +37,7 @@ public class DownloadService extends Service {
             //下载成功时将前台服务通知关闭，并创建一个下载成功的通知
             stopForeground(true);
             getNotificationManager().notify(1, getNotification("下载完成", -1));
-            Toast.makeText(DownloadService.this, "Download Success", Toast.LENGTH_SHORT).show();
+            MyToast.show("Download Success");
         }
 
         @Override
@@ -44,21 +46,21 @@ public class DownloadService extends Service {
             //下载失败时将前台服务通知关闭，并创建一个下载失败的通知
             stopForeground(true);
             getNotificationManager().notify(1, getNotification("下载失败", -1));
-            Toast.makeText(DownloadService.this, "Download Failed", Toast.LENGTH_SHORT).show();
+            MyToast.show("Download Failed");
         }
 
         @Override
         public void onPaused() {
             downloadTask = null;
             getNotificationManager().notify(1, getNotification("下载暂停", -1));
-            Toast.makeText(DownloadService.this, "Paused", Toast.LENGTH_SHORT).show();
+            MyToast.show("Paused");
         }
 
         @Override
         public void onCanceled() {
             downloadTask = null;
             stopForeground(true);
-            Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
+            MyToast.show("Canceled");
         }
     };
 
@@ -78,7 +80,7 @@ public class DownloadService extends Service {
                 downloadTask.execute(downloadUrl);
                 //在系统状态栏中创建一个持续运行的通知
                 startForeground(1, getNotification("下载准备中...", 0));
-                Toast.makeText(DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                MyToast.show("Downloading...");
             }
         }
 
@@ -102,7 +104,7 @@ public class DownloadService extends Service {
                     }
                     getNotificationManager().cancel(1);
                     stopForeground(true);
-                    Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
+                    MyToast.show("Canceled");
                 }
             }
         }

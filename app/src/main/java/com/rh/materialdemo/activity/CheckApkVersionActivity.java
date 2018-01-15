@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -23,15 +22,13 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.rh.materialdemo.MainActivity;
-import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.DownloadListener;
 import com.rh.materialdemo.Util.DownloadTask;
 import com.rh.materialdemo.Util.HttpUtils;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.dialog.MyDialog;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
@@ -192,10 +189,10 @@ public class CheckApkVersionActivity extends BaseActivity{
         HttpUtils.sendOkHttpRequestWithGETWithConnectTimeOut("http://10.203.147.113:8080/MyServlet/update/update.json", new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Looper.prepare();
-                Toast.makeText(MyApplication.getContext(), "与服务器连接超时，请与服务器管理员联系！", Toast.LENGTH_LONG).show();
-                mUpdateHandler.sendEmptyMessage(IO_ERROR);
-                Looper.loop();
+                runOnUiThread(() -> {
+                    MyToast.systemshow("与服务器连接超时，请与服务器管理员联系！");
+                    mUpdateHandler.sendEmptyMessage(IO_ERROR);
+                });
             }
 
             @Override
@@ -400,7 +397,7 @@ public class CheckApkVersionActivity extends BaseActivity{
                         goHome(activity);
                         break;
                     case JSON_ERROR:
-                        Toast.makeText(activity, "Json解析错误", Toast.LENGTH_LONG).show();
+                        MyToast.show("Json解析错误");
                         goHome(activity);
                         break;
                     case IO_ERROR:

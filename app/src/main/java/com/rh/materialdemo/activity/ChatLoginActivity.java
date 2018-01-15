@@ -31,13 +31,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.rh.materialdemo.R;
-
+import com.rh.materialdemo.Util.MyToast;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -339,10 +336,10 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             } else if (code == 2) {
-                Toast.makeText(ChatLoginActivity.this, "功能完善中，暂不支持注册", Toast.LENGTH_LONG).show();
+                MyToast.show("功能完善中，暂不支持注册");
                 Log.e(TAG, "注册完成");
             } else {
-                Toast.makeText(ChatLoginActivity.this, "注册失败", Toast.LENGTH_LONG).show();
+                MyToast.show("注册失败");
                 Log.e(TAG, "注册失败");
             }
         }

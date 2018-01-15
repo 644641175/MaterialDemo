@@ -5,20 +5,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.HttpUtils;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.bean.Diary;
-
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -100,10 +96,10 @@ public class ClientActivity extends BaseActivity {
                     startActivity(intent);*/
 
                 } else {
-                    Toast.makeText(ClientActivity.this, "当前未处于分屏模式", Toast.LENGTH_LONG).show();
+                    MyToast.show("当前未处于分屏模式");
                 }
             } else {
-                Toast.makeText(ClientActivity.this, "当前Android版本不支持分屏", Toast.LENGTH_LONG).show();
+                MyToast.show("当前Android版本不支持分屏");
             }
         });
     }

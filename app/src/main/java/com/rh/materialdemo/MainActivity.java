@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.rh.materialdemo.Util.HttpUtils;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.activity.ChatLoginActivity;
 import com.rh.materialdemo.activity.CheckApkVersionActivity;
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         HttpUtils.sendOkHttpRequestWithGET(bingPictureUrl, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "获取图片失败，请检查网络状态", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> MyToast.systemshow("获取图片失败，请检查网络状态"));
             }
 
             @Override
@@ -186,13 +187,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.camera:
-                Toast.makeText(this, "You clicked camera", Toast.LENGTH_SHORT).show();
+                MyToast.show("You clicked camera");
                 break;
             case R.id.backup:
-                Toast.makeText(this, "You clicked backup", Toast.LENGTH_SHORT).show();
+                MyToast.show("You clicked backup");
                 break;
             case R.id.sunny:
-                Toast.makeText(this, "You clicked sunny", Toast.LENGTH_SHORT).show();
+                MyToast.show("You clicked sunny");
                 break;
             //HomeAsUp按钮的id永远是android.R.id.home
             case android.R.id.home:

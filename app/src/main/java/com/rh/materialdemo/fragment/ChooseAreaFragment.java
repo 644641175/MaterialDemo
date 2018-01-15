@@ -16,10 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.HttpUtils;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.activity.WeatherActivity;
 import com.rh.materialdemo.activity.WeatherLocationActivity;
@@ -216,7 +215,7 @@ public class ChooseAreaFragment extends Fragment {
                 Log.d(TAG, "网上获取数据失败");
                 getActivity().runOnUiThread(() -> {
                     closeProgressDialog();
-                    Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                    MyToast.show("加载失败");
                 });
             }
 

@@ -21,6 +21,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.ActivityCollector;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.activity.ChatActivity;
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
@@ -161,7 +162,7 @@ public class WebSocketService extends Service {
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
                     if (networkInfo == null || !networkInfo.isAvailable()) {
-                        Toast.makeText(getApplicationContext(), "网络已断开，请重新连接", Toast.LENGTH_SHORT).show();
+                        MyToast.show("网络已断开，请重新连接");
                     } else {
                         if (webSocketConnection != null) {
                             webSocketConnection.disconnect();

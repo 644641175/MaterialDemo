@@ -12,16 +12,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.HttpCallbackListener;
 import com.rh.materialdemo.Util.HttpUtils;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.gson.BingDaily;
 import com.rh.materialdemo.gson.DailyArticle;
-
 import org.json.JSONException;
 
 /**
@@ -88,7 +86,7 @@ public class PictureActivity extends BaseActivity {
 
             @Override
             public void onError(Exception e) {
-                runOnUiThread(() -> Toast.makeText(PictureActivity.this, "加载每日一文失败", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> MyToast.show("加载每日一文失败"));
                 Log.e(TAG, "onError: " + e);
             }
         });

@@ -18,12 +18,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.ActivityCollector;
 import com.rh.materialdemo.Util.HttpUtils;
+import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.Util.ParseJsonUtils;
 import com.rh.materialdemo.gson.Forecast;
 import com.rh.materialdemo.gson.Weather;
@@ -149,7 +148,7 @@ public class WeatherActivity extends BaseActivity {
         HttpUtils.sendOkHttpRequestWithGET(requestBinPic, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                runOnUiThread(() -> Toast.makeText(WeatherActivity.this, "获取必应图片失败", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> MyToast.show("获取必应图片失败"));
                 e.printStackTrace();
             }
 
@@ -183,7 +182,7 @@ public class WeatherActivity extends BaseActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                    MyToast.show("获取天气信息失败");
                     swipeRefreshLayout.setRefreshing(false);
                 });
             }
@@ -199,7 +198,7 @@ public class WeatherActivity extends BaseActivity {
                         editor.apply();
                         showWeatherInfo(weather);
                     } else {
-                        Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                        MyToast.show("获取天气信息失败");
                     }
                     swipeRefreshLayout.setRefreshing(false);
                 });
@@ -248,7 +247,7 @@ public class WeatherActivity extends BaseActivity {
            /* Intent intent = new Intent(this, AutoUpdateService.class);
             startService(intent);*/
         } else {
-            Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_LONG).show();
+            MyToast.show("获取天气信息失败");
         }
 
     }
