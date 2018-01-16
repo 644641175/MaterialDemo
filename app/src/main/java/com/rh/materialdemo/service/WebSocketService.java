@@ -60,11 +60,9 @@ public class WebSocketService extends Service {
 
     @Override
     public void onDestroy() {
-        if (webSocketConnection != null && webSocketConnection.isConnected()) {
-            webSocketConnection.disconnect();
-            webSocketConnection = null;
-        }
+        closeWebsocket();
         if (connectionReceiver != null) {
+            //取消注册网络监听Receiver
             unregisterReceiver(connectionReceiver);
         }
         Log.e(TAG, "onDestroy: ");
@@ -75,7 +73,7 @@ public class WebSocketService extends Service {
         if (webSocketConnection == null) {
             webSocketConnection = new WebSocketConnection();
         }
-        if (!webSocketConnection.isConnected()) {
+        if (!webSocketConnection.isConnected()||isClosed) {
             try {
                 String webSocketHost = "ws://10.203.147.113:8080/MyServlet/WebSocketCommunication";
                 webSocketConnection.connect(webSocketHost, new WebSocketHandler() {
@@ -125,7 +123,11 @@ public class WebSocketService extends Service {
                                 Log.e(TAG, "code 4");
                                 break;
                             case 5:
-                                Log.e(TAG, "code 5 服务器关闭");
+                                if (ActivityCollector.isActivityExist(ChatActivity.class)) {
+                                    Log.e(TAG, "code 5 服务器关闭");
+                                    MyToast.systemshow("服务器已被关闭 ！");
+                                    ActivityCollector.getActivity(ChatActivity.class).finish();
+                                }
                                 break;
                             default:
                         }
@@ -139,15 +141,17 @@ public class WebSocketService extends Service {
 
     public static void sendMsg(String s) {
         if (!TextUtils.isEmpty(s)) {
-            if (webSocketConnection != null) {
+            if (webSocketConnection != null&&webSocketConnection.isConnected()) {
                 webSocketConnection.sendTextMessage(s);
             }
         }
     }
 
     public static void closeWebsocket() {
-        if (webSocketConnection != null && webSocketConnection.isConnected()) {
+        if (webSocketConnection.isConnected()){
             webSocketConnection.disconnect();
+        }
+        if (webSocketConnection != null) {
             webSocketConnection = null;
         }
     }
@@ -162,16 +166,23 @@ public class WebSocketService extends Service {
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
                     if (networkInfo == null || !networkInfo.isAvailable()) {
-                        MyToast.show("网络已断开，请重新连接");
-                    } else {
+                        MyToast.show("当前网络不可用，请检查网络设置");
                         if (webSocketConnection != null) {
                             webSocketConnection.disconnect();
+                            //此处isConnected显示为true，不正常，使用时请注意
+                            Log.e(TAG, "是否连接a: "+webSocketConnection.isConnected());
                         }
-                        if (isClosed) {
-                            webSocketConnect();
+                        isClosed = true;
+                    } else {
+                        Log.e(TAG, "网络可用" );
+                        if (webSocketConnection != null) {
+                            Log.e(TAG, "是否连接1: "+webSocketConnection.isConnected());
+                            if (!webSocketConnection.isConnected()) {
+                                webSocketConnect();
+                                Log.e(TAG, "网络恢复: 重连WebSocket服务器" );
+                            }
                         }
                     }
-
                 }
             };
 

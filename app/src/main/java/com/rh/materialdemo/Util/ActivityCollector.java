@@ -44,7 +44,7 @@ public class ActivityCollector {
      *
      * @param clazz Activity 的类对象
      */
-    private static <T extends Activity> T getActivity(Class<T> clazz) {
+    public static <T extends Activity> T getActivity(Class<T> clazz) {
         return (T) activities.get(clazz);
     }
 

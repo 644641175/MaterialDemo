@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,19 +15,24 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.MyToast;
+import com.rh.materialdemo.Util.NetworkUtils;
+import com.rh.materialdemo.Util.StorageSpaceUtils;
 import com.rh.materialdemo.service.DownloadService;
 
 /**
  * @author RH
  */
 public class DownloadActivity extends BaseActivity implements View.OnClickListener {
-
+    private static final String TAG = "DownloadActivity";
     private EditText textUrl;
     private DownloadService.DownloadBinder downloadBinder;
     private ServiceConnection connection = new ServiceConnection() {
@@ -81,6 +87,11 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
         startDownload.setOnClickListener(this);
         pauseDownload.setOnClickListener(this);
         cancelDownload.setOnClickListener(this);
+        TextView space = (TextView) findViewById(R.id.StorageSpaces);
+
+        String availInternalSize= StorageSpaceUtils.formateFileSize(StorageSpaceUtils.getAvailableInternalMemorySize(),false);
+        String totalInternalSize= StorageSpaceUtils.formateFileSize(StorageSpaceUtils.getTotalInternalMemorySize(),false);
+        space.setText(String.format("内部存储空间剩余：%s/%s", availInternalSize, totalInternalSize));
     }
 
     @Override
@@ -113,7 +124,11 @@ public class DownloadActivity extends BaseActivity implements View.OnClickListen
             case R.id.start_download:
                 String url = textUrl.getText().toString();
                 if (!"".equals(url)) {
-                    downloadBinder.startDownload(url);
+                    if (NetworkUtils.isNetworkConnected(this)) {
+                        downloadBinder.startDownload(url);
+                    }else {
+                        MyToast.show("当前网络不可用，请检查网络设置！");
+                    }
                 } else {
                     MyToast.show("请输入下载链接");
                 }

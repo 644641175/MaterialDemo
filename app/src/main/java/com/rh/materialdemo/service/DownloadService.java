@@ -5,15 +5,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 import com.rh.materialdemo.MainActivity;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.DownloadListener;
 import com.rh.materialdemo.Util.DownloadTask;
+import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.MyToast;
 
 import java.io.File;
@@ -22,6 +25,7 @@ import java.io.File;
  * @author RH
  */
 public class DownloadService extends Service {
+    private static final String TAG = "DownloadService";
     private DownloadTask downloadTask;
     private String downloadUrl;
     private DownloadListener listener = new DownloadListener() {
@@ -74,6 +78,10 @@ public class DownloadService extends Service {
 
     public class DownloadBinder extends Binder {
         public void startDownload(String url) {
+            if (!url.startsWith("http")){
+                MyToast.show("下载链接错误...");
+                return;
+            }
             if (downloadTask == null) {
                 downloadUrl = url;
                 downloadTask = new DownloadTask(listener);

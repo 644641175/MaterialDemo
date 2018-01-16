@@ -21,19 +21,28 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.rh.materialdemo.MainActivity;
+import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.DownloadListener;
 import com.rh.materialdemo.Util.DownloadTask;
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.MyToast;
+import com.rh.materialdemo.Util.NetworkUtils;
 import com.rh.materialdemo.dialog.MyDialog;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+
+import javax.security.auth.login.LoginException;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -44,7 +53,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
  * @author RH
  * @date 2018/1/9
  */
-public class CheckApkVersionActivity extends BaseActivity{
+public class CheckApkVersionActivity extends BaseActivity {
     private static final String TAG = "CheckApkVersionActivity";
     /**
      * 更新
@@ -75,6 +84,7 @@ public class CheckApkVersionActivity extends BaseActivity{
     private static String content;
     private static String url;
     private TextView tvPro;
+    private ProgressBar progressBar;
     /**
      * 升级提示框
      */
@@ -150,7 +160,7 @@ public class CheckApkVersionActivity extends BaseActivity{
     @SuppressLint("SetTextI18n")
     private void initView() {
         tvPro = (TextView) findViewById(R.id.tv_pro);
-
+        progressBar = (ProgressBar) findViewById(R.id.aok_download_progress);
         TextView tvVersion = (TextView) findViewById(R.id.tv_version);
         // 设置版本号
         tvVersion.setText("版本号：" + getAppVersion());
@@ -190,7 +200,11 @@ public class CheckApkVersionActivity extends BaseActivity{
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 runOnUiThread(() -> {
-                    MyToast.systemshow("与服务器连接超时，请与服务器管理员联系！");
+                    if (!NetworkUtils.isNetworkConnected(MyApplication.getContext())){
+                        MyToast.systemshow("网络未连接，请检查网络设置");
+                    }else {
+                        MyToast.systemshow("与服务器连接超时，请与服务器管理员联系！");
+                    }
                     mUpdateHandler.sendEmptyMessage(IO_ERROR);
                 });
             }
@@ -249,7 +263,7 @@ public class CheckApkVersionActivity extends BaseActivity{
     /**
      * 升级弹框
      */
-    private void mySelfDialog(String content){
+    private void mySelfDialog(String content) {
         MyDialog myDialog = new MyDialog(this);
         myDialog.setTitle("检测到有新版本，是否下载？");
         myDialog.setMessage(content);
@@ -259,7 +273,7 @@ public class CheckApkVersionActivity extends BaseActivity{
         });
         myDialog.setNoOnClickListener("暂不更新", () -> {
             myDialog.dismiss();
-            startActivity(new Intent(   CheckApkVersionActivity.this, MainActivity.class));
+            startActivity(new Intent(CheckApkVersionActivity.this, MainActivity.class));
             finish();
         });
         myDialog.show();
@@ -301,7 +315,7 @@ public class CheckApkVersionActivity extends BaseActivity{
                     tvPro.setTextColor(Color.rgb(255, 64, 129));
                     new Handler().postDelayed(() -> {
                         startActivity(new Intent(CheckApkVersionActivity.this, MainActivity.class));
-                            finish();
+                        finish();
                     }, 2000);
                 }
                 break;
@@ -323,19 +337,27 @@ public class CheckApkVersionActivity extends BaseActivity{
             Log.e(TAG, "downloadAPK: 未获取下载权限");
             return;
         }
+        if (!NetworkUtils.isNetworkConnected(MyApplication.getContext())){
+            MyToast.systemshow("网络未连接，请检查网络设置");
+            return;
+        }
         String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
         Log.e(TAG, "开始下载新APK: ");
+        progressBar.setVisibility(View.VISIBLE);
         DownloadTask downloadTask = new DownloadTask(new DownloadListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onProcess(int progress) {
                 // 显示进度
                 tvPro.setText(progress + "%");
+                progressBar.setProgress(progress);
             }
 
             @Override
             public void onSuccess() {
+                tvPro.setText("100%");
+                progressBar.setProgress(100);
                 // 跳转系统安装页面
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     //在AndroidManifest中的android:authorities值
@@ -358,17 +380,19 @@ public class CheckApkVersionActivity extends BaseActivity{
 
             @Override
             public void onFailed() {
-
+                Log.e(TAG, "APK下载失败 ");
+                MyToast.systemshow("更新包下载失败，请手动尝试更新！");
+                finish();
             }
 
             @Override
             public void onPaused() {
-
+                Log.e(TAG, "APK下载暂停 ");
             }
 
             @Override
             public void onCanceled() {
-
+                Log.e(TAG, "APK下载取消 ");
             }
         });
         downloadTask.execute(downloadUrl);
@@ -397,7 +421,7 @@ public class CheckApkVersionActivity extends BaseActivity{
                         goHome(activity);
                         break;
                     case JSON_ERROR:
-                        MyToast.show("Json解析错误");
+                        MyToast.show("Json解析错误，请与开发人员联系");
                         goHome(activity);
                         break;
                     case IO_ERROR:
@@ -416,7 +440,7 @@ public class CheckApkVersionActivity extends BaseActivity{
 
     @Override
     public void onBackPressed() {
-        if (myDialog != null){
+        if (myDialog != null) {
             myDialog.dismiss();
             myDialog = null;
         }
@@ -426,7 +450,7 @@ public class CheckApkVersionActivity extends BaseActivity{
 
     @Override
     protected void onDestroy() {
-        if (myDialog != null){
+        if (myDialog != null) {
             myDialog.dismiss();
             myDialog = null;
         }

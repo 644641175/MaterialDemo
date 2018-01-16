@@ -14,13 +14,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- *
  * @author RH
  * @date 2017/12/19
  */
 
 public class DownloadTask extends AsyncTask<String, Integer, Integer> {
-
+    private static final String TAG = "DownloadTask";
     private static final int TYPE_SUCCESS = 0;
     private static final int TYPE_FAILED = 1;
     private static final int TYPE_PAUSED = 2;
@@ -44,7 +43,13 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
             //记录已下载的文件长度
             long downloadedLength = 0;
             String downloadUrl = strings[0];
-            String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
+            String fileName;
+            if (downloadUrl.lastIndexOf("/") == -1) {
+                Log.e(TAG, "doInBackground: 下载文件无名称" );
+                fileName = "";
+            } else {
+                fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
+            }
             //SD卡的Download目录
             String directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
             file = new File(directory + fileName);
@@ -53,8 +58,8 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
             }
             //获取要下载的文件的长度
             long contentLength = getContentLength(downloadUrl);
-            Log.e("DownloadTask", "doInBackground: 需要下载的数据长度为"+contentLength);
-            Log.e("DownloadTask", "doInBackground: 已下载的数据长度为"+downloadedLength);
+            Log.e("DownloadTask", "doInBackground: 需要下载的数据长度为" + contentLength);
+            Log.e("DownloadTask", "doInBackground: 已下载的数据长度为" + downloadedLength);
             if (contentLength == 0) {
                 return TYPE_FAILED;
             } else if (contentLength == downloadedLength) {
@@ -93,7 +98,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
                     }
                 }
                 response.body().close();
-                Log.e("DownloadTask", "下载完成 " );
+                Log.e("DownloadTask", "下载完成 ");
                 return TYPE_SUCCESS;
             }
         } catch (IOException e) {
@@ -152,12 +157,20 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         isCanceled = true;
     }
 
-    private long getContentLength(String downloadUrl) throws IOException {
+    private long getContentLength(String downloadUrl) {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(downloadUrl)
-                .build();
-        Response response = client.newCall(request).execute();
+
+        Response response = null;
+        try {
+            Request request = new Request.Builder()
+                    .url(downloadUrl)
+                    .build();
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            Log.e("DownloadTask", "getContentLength:输入的下载链接错误 ");
+        }
         if (response != null && response.isSuccessful()) {
             long contentLength = response.body().contentLength();
             response.close();

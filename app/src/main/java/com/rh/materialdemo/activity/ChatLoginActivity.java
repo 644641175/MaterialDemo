@@ -11,13 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -31,6 +29,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import com.rh.materialdemo.R;
@@ -83,8 +82,8 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
             return false;
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(view -> attemptLogin());
+        TextView mEmailSignInButton = (TextView) findViewById(R.id.email_sign_up);
+        mEmailSignInButton.setOnClickListener(view -> MyToast.show("功能完善中，暂不支持注册"));
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -93,10 +92,7 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
         mCheckBox.setOnCheckedChangeListener(this);
 
         Button mButtonLogin = (Button) findViewById(R.id.button_login);
-        mButtonLogin.setOnClickListener(v -> {
-
-        });
-
+        mButtonLogin.setOnClickListener(v -> attemptLogin());
         readAccount();
     }
 
@@ -313,14 +309,7 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
                     }
                 }
             }
-
-            try {
-                // 模拟注册中。
-                Thread.sleep(2000);
-                return 2;
-            } catch (InterruptedException e) {
-                return 3;
-            }
+            return 1;
         }
 
         @Override
@@ -335,12 +324,6 @@ public class ChatLoginActivity extends AppCompatActivity implements LoaderCallba
             } else if (code == 1) {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
-            } else if (code == 2) {
-                MyToast.show("功能完善中，暂不支持注册");
-                Log.e(TAG, "注册完成");
-            } else {
-                MyToast.show("注册失败");
-                Log.e(TAG, "注册失败");
             }
         }
 

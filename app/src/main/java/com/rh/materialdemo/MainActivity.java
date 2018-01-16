@@ -159,8 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intentDownload);
                     break;
                 case R.id.nav_location:
-                    Intent intentUpdateApk = new Intent(MainActivity.this, CheckApkVersionActivity.class);
-                    startActivity(intentUpdateApk);
+                    MyToast.show("功能开发中，敬请期待！");
                     break;
                 case R.id.nav_folder:
                     Intent intentChat = new Intent(MainActivity.this, ChatLoginActivity.class);

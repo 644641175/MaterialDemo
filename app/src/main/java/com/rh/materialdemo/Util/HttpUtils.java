@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -26,7 +28,6 @@ public class HttpUtils {
 */
     public static void sendOkHttpRequestWithGET(String address, okhttp3.Callback callback) {
         OkHttpClient client = new OkHttpClient();
-
         Request request = new Request.Builder()
                 .url(address)
                 .build();
@@ -101,5 +102,18 @@ public class HttpUtils {
 
     }
 
+
+    public static boolean MatcherString(String str , String regEx){
+        //要验证的字符串
+        //String str = "baike.xsoftlab.net";
+        // 正则表达式规则
+        //String regEx = "baike.*";
+        // 编译正则表达式
+        Pattern pattern = Pattern.compile(regEx);
+
+        Matcher matcher = pattern.matcher(str);
+        // 查找字符串中是否有匹配正则表达式的字符/字符串
+        return matcher.find();
+    }
 
 }

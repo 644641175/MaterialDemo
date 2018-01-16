@@ -15,13 +15,13 @@
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
-    <ProgressBar
+   <!-- <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="60dp" />
+        android:layout_marginBottom="60dp" />-->
 
     <TextView
         android:id="@+id/textView2"
@@ -35,14 +35,26 @@
         android:textSize="50sp" />
 
     <TextView
-        android:textColor="#ffffff"
+        android:textColor="#0fdc61"
         android:visibility="invisible"
         android:id="@+id/tv_pro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/progressBar"
+        android:layout_above="@+id/aok_download_progress"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="80dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ProgressBar
+        android:id="@+id/aok_download_progress"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="250dp"
+        android:layout_height="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="70dp"
+        android:max="100"
+        android:visibility="invisible"
+        android:progressDrawable="@drawable/progress_drawble" />
 
 </RelativeLayout>
