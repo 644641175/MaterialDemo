@@ -55,6 +55,6 @@ dependencies {
     implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.13'
     implementation files('lib/autobahn-0.5.0.jar')
     /*检测内存泄漏*/
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+   /* debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
 }

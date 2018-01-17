@@ -142,6 +142,7 @@ public class WebSocketService extends Service {
     public static void sendMsg(String s) {
         if (!TextUtils.isEmpty(s)) {
             if (webSocketConnection != null&&webSocketConnection.isConnected()) {
+                Log.e(TAG, "sendMsg: "+s);
                 webSocketConnection.sendTextMessage(s);
             }
         }
@@ -193,11 +194,16 @@ public class WebSocketService extends Service {
 
     }
 
+    /**
+     * 消息通知栏
+     */
     private NotificationManager getNotificationManager() {
         return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
     private Notification getNotification(String contentText) {
+        //消息与ChatActivity关联，点击消息后跳转到ChatActivity
         Intent intent = new Intent(this, ChatActivity.class);
+        //intent.putExtra("data",contentText);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
         Notification builder = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
