@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--今日头条-->
+    <string-array name="name">
+        <item>热点</item>
+        <item>推荐</item>
+        <item>社会</item>
+        <item>娱乐</item>
+        <item>科技</item>
+        <item>军事</item>
+        <item>体育</item>
+        <item>汽车</item>
+        <item>财经</item>
+        <item>国际</item>
+    </string-array>
+
+    <string-array name="id">
+        <item>__all__</item>
+        <item>news_hot</item>
+        <item>news_society</item>
+        <item>news_entertainment</item>
+        <item>news_tech</item>
+        <item>news_military</item>
+        <item>news_sports</item>
+        <item>news_car</item>
+        <item>news_finance</item>
+        <item>news_world</item>
+    </string-array>
+
+    <!--内涵段子-->
+    <string-array name="jokeName">
+        <item>推荐</item>
+        <item>段子</item>
+        <item>图片</item>
+        <item>段友秀</item>
+        <item>视频</item>
+    </string-array>
+
+    <string-array name="jokeId">
+        <item>-101</item>
+        <item>-102</item>
+        <item>-103</item>
+        <item>-301</item>
+        <item>-104</item>
+    </string-array>
+
+</resources>

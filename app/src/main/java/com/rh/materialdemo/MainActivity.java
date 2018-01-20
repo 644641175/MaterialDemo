@@ -21,10 +21,12 @@ import android.widget.Toast;
 import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.Util.ParseJsonUtils;
+import com.rh.materialdemo.activity.BaseActivity;
 import com.rh.materialdemo.activity.ChatLoginActivity;
 import com.rh.materialdemo.activity.CheckApkVersionActivity;
 import com.rh.materialdemo.activity.ClientActivity;
 import com.rh.materialdemo.activity.DownloadActivity;
+import com.rh.materialdemo.activity.ServerActivity;
 import com.rh.materialdemo.activity.WeatherLocationActivity;
 import com.rh.materialdemo.adapter.PictureAdapter;
 import com.rh.materialdemo.gson.BingDaily;
@@ -38,7 +40,7 @@ import okhttp3.Response;
 /**
  * @author RH
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
     private List<BingDaily> bingDailyList = new ArrayList<>();
@@ -159,7 +161,9 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intentDownload);
                     break;
                 case R.id.nav_location:
-                    MyToast.show("功能开发中，敬请期待！");
+                   // MyToast.show("功能开发中，敬请期待！");
+                    Intent intentServer = new Intent(MainActivity.this, ServerActivity.class);
+                    startActivity(intentServer);
                     break;
                 case R.id.nav_folder:
                     Intent intentChat = new Intent(MainActivity.this, ChatLoginActivity.class);

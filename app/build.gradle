@@ -10,9 +10,11 @@ android {
         versionCode 1
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        jackOptions {
+       /* jackOptions {
             enabled true
-        }
+        }*/
+
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -20,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+  /*  compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }*/
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
@@ -33,10 +39,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:26.+'
+
     testCompile 'junit:junit:4.12'
-    /*添加design库，需要用到库中
-                                       NavigationView控件，FloatingActionButton控件，Snackbar控件
-                                       版本需要和appcompat保持一致*/
+    /*添加design库，需要用到库中 NavigationView控件，FloatingActionButton控件，Snackbar控件版本需要和appcompat保持一致*/
     compile 'com.android.support:design:26.+'
     /*github开源jar包，实现图片圆形化*/
     compile 'de.hdodenhof:circleimageview:2.1.0'
@@ -55,6 +60,6 @@ dependencies {
     implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.13'
     implementation files('lib/autobahn-0.5.0.jar')
     /*检测内存泄漏*/
-   /* debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }

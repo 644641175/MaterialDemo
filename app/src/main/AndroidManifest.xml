@@ -76,12 +76,17 @@
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name="com.rh.neihan.activity.WebActivity"
+            android:label=""/>
+
         <service
             android:name=".service.WebSocketService"
             android:enabled="true"
             android:exported="true">
         </service>
 
+        <!--android7.0以后跳转安装界面权限改变-->
         <provider
             android:authorities="com.rh.materialdemo.fileprovider"
             android:name="android.support.v4.content.FileProvider"
