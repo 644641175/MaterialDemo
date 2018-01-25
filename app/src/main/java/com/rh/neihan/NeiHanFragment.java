@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.adapter.BaseFragmentPagerAdapter;
+import com.rh.neihan.fragment.BingPictureFragment;
 import com.rh.neihan.fragment.JokeFragment;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +49,28 @@ public class NeiHanFragment extends Fragment {
         viewPager = view.findViewById(R.id.neihan_fragment_viewpager);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        viewPager.setOffscreenPageLimit(6);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     private void initFragment() {
         String[] titleArray = MyApplication.getContext().getResources().getStringArray(R.array.jokeName);
         String[] idArray = MyApplication.getContext().getResources().getStringArray(R.array.jokeId);
         Log.e("NeiHanFragment", "titleArray: "+titleArray.length );
-        for (int i = 0; i < titleArray.length; i++) {
+       /* for (int i = 0; i < titleArray.length; i++) {
             Fragment jokeFragment = JokeFragment.newInstance(idArray[i]);
             fragmentList.add(jokeFragment);
-        }
+        }*/
+
+        //Fragment jokeFragment1 = JokeFragment.newInstance("推荐");
+        Fragment jokeFragment = JokeFragment.getInstance();
+        Fragment  bingPictureFragment = BingPictureFragment.getInstance();
+      //  Fragment jokeFragment2 = JokeFragment.newInstance("段友秀");
+      //  Fragment jokeFragmen3 = JokeFragment.newInstance("视频");
+       // fragmentList.add(jokeFragment1);
+        fragmentList.add(jokeFragment);
+        fragmentList.add(bingPictureFragment);
+     //   fragmentList.add(jokeFragment2);
+       // fragmentList.add(jokeFragmen3);
 
          // 在Fragment中的ViewPager中添加Fragment时，获取FragmentManager不能使用getFragmentManager，
          //否则会报如下错误：

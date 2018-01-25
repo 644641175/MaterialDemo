@@ -16,8 +16,8 @@ public class JsonUtils {
     public static Joke parseJokeData(String string){
         Gson gson = new Gson();
         Joke joke = gson.fromJson(string,Joke.class);
-
-      /*  for (JokeDataDataEntity jokeDataDataEntity : joke.getData().getData()){
+        Log.e("parseJokeData", "parseJokeData: "+string);
+       /* for (JokeDataDataEntity jokeDataDataEntity : joke.getData().getData()){
             Log.i("JsonUtils", "parseJokeData: "+jokeDataDataEntity.getGroup().toString() );
         }*/
         return joke;

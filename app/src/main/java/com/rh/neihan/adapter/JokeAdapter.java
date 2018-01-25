@@ -3,18 +3,25 @@ package com.rh.neihan.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.MyToast;
 import com.rh.neihan.activity.WebActivity;
 import com.rh.neihan.gson.JokeDataDataEntity;
 import com.rh.neihan.utils.DataUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +32,14 @@ import java.util.List;
 public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.ViewHold> {
     private Context context;
     private List<JokeDataDataEntity> jokeDataDataEntityList = new ArrayList<>();
+    private int lastPosition = -1;
 
     public JokeAdapter(List<JokeDataDataEntity> jokeDataDataGroupEntityList) {
         this.jokeDataDataEntityList = jokeDataDataGroupEntityList;
     }
 
     class ViewHold extends RecyclerView.ViewHolder {
+        CardView cardView;
         ImageView ivUserIcon;
         TextView tvAuthor;
         TextView tvContent;
@@ -40,9 +49,11 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.ViewHold> {
         TextView tvBurryCount;
         TextView tvCommentCount;
         ImageView imgShareLink;
+        LinearLayout linearLayout;
 
         private ViewHold(View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.joke_adapter_item_card_view);
             ivUserIcon = itemView.findViewById(R.id.joke_adapter_item_iv_user);
             tvAuthor = itemView.findViewById(R.id.joke_adapter_item_tv_author);
             tvContent = itemView.findViewById(R.id.joke_adapter_item_tv_content);
@@ -52,8 +63,7 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.ViewHold> {
             tvBurryCount = itemView.findViewById(R.id.joke_adapter_item_tv_unlike);
             tvCommentCount = itemView.findViewById(R.id.joke_adapter_item_tv_comment_count);
             imgShareLink = itemView.findViewById(R.id.joke_adapter_item_img_share);
-
-
+            linearLayout = itemView.findViewById(R.id.joke_adapter_item_linearLayout);
         }
     }
 
@@ -64,9 +74,7 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.ViewHold> {
             context = parent.getContext();
         }
         View view = LayoutInflater.from(context).inflate(R.layout.joke_adapter_item, parent, false);
-        ViewHold viewHold = new ViewHold(view);
-
-        return viewHold;
+        return new ViewHold(view);
     }
 
     @Override
@@ -84,17 +92,34 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.ViewHold> {
             holder.imgShareLink.setOnClickListener(v -> {
             });
 
-            holder.tvCommentCount.setOnClickListener(v -> {
+            holder.linearLayout.setOnClickListener(v -> {
                 Intent intent = new Intent(context, WebActivity.class);
-                intent.putExtra("joke_url","http://m.neihanshequ.com/group/"+jokeDataDataEntity.getGroup().getGroup_id());
-                intent.putExtra("joke_content",jokeDataDataEntity.getGroup().getContent());
+                intent.putExtra("joke_url", "http://m.neihanshequ.com/group/" + jokeDataDataEntity.getGroup().getGroup_id());
+                intent.putExtra("joke_content", jokeDataDataEntity.getGroup().getContent());
                 context.startActivity(intent);
             });
 
         } else {
-            MyToast.show("加载中！");
+            MyToast.show("加载中......");
         }
 
+        setAnimation(holder.cardView, position);
+    }
+
+    protected void setAnimation(View viewToAnimate, int position) {
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(viewToAnimate.getContext(), R
+                    .anim.adapter_item_in);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHold holder) {
+        super.onViewDetachedFromWindow(holder);
+        //一定要清除每个item的动画，否者快速滑动的时候，动画不会回收会出现重叠背景，出现卡屏现象。
+        holder.cardView.clearAnimation();
     }
 
     @Override

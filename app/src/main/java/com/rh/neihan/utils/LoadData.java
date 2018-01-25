@@ -34,16 +34,20 @@ public class LoadData {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                  Joke joke = JsonUtils.parseJokeData(response.body().string());
-                if (SUCCESS.equals(joke.getMessage())) {
-                    jokeDataCallbackListener.onSuccess(joke);
-                }else {
-                    Log.e("LoadData", "message为retry: ");
-                }
-
+                    Joke joke = JsonUtils.parseJokeData(response.body().string());
+                    if (SUCCESS.equals(joke.getMessage())) {
+                        if (joke.getData().isHas_more() && joke.getData().getData().size() != 0){
+                            jokeDataCallbackListener.onSuccess(joke.getData().getData());
+                        }else {
+                            jokeDataCallbackListener.onFail("暂无数据更新，请稍后刷新重试！");
+                        }
+                    } else {
+                        Log.e("LoadData", "message为retry: ");
+                        jokeDataCallbackListener.onFail("数据获取失败，请刷新重试！");
+                    }
                 } else {
                     Log.e("LoadData", "请求未完成: ");
-
+                    jokeDataCallbackListener.onFail("服务器数据返回失败，请刷新重试！");
                 }
             }
         });

@@ -12,9 +12,14 @@ public class JokeDataEntity {
 
     @SerializedName("tip")
     private String tip;
-
+    @SerializedName("has_more")
+    private boolean has_more;
     @SerializedName("data")
     private List<JokeDataDataEntity> data;
+
+    public boolean isHas_more() {
+        return has_more;
+    }
 
     public List<JokeDataDataEntity> getData() {
         return data;
