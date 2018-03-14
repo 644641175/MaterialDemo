@@ -29,11 +29,11 @@
 
     <!--内涵段子-->
     <string-array name="jokeName">
-        <item>推荐</item>
         <item>段子</item>
         <item>图片</item>
-        <item>段友秀</item>
-        <item>视频</item>
+        <item>新闻</item>
+        <!--<item>段友秀</item>
+        <item>视频</item>-->
     </string-array>
 
     <string-array name="jokeId">

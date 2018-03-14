@@ -111,7 +111,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                     messageAdapter.notifyDataSetChanged();
                     Log.e(TAG, "onClick: " + mEditText.getText().toString());
                     //发送给服务器
-                   // WebSocketService.sendMsg(filterHtml(Html.toHtml(mEditText.getText())));
+                    // WebSocketService.sendMsg(filterHtml(Html.toHtml(mEditText.getText())));
                     //这里文字转换后，网页上显示会乱码
                     WebSocketService.sendMsg(mEditText.getText().toString());
                     mEditText.setText("");
@@ -129,7 +129,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     /**
      * @return 获取当前时间
      */
-    private static String grtFormatTime() {
+    private  String grtFormatTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM—dd HH:mm", Locale.getDefault());
         return simpleDateFormat.format(calendar.getTime());
@@ -139,10 +139,13 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
      * 用正则表达式过滤掉无关的文本
      */
     public static String filterHtml(String str) {
-        Log.e(TAG, "filterHtml: "+str );
+        Log.e(TAG, "filterHtml: " + str);
         return str.replaceAll("<(?!br|img)[^>]+>", "").trim();
     }
 
+    private void setTag() {
+
+    }
 
     /**
      * 在 Java 语言中，非静态匿名内部类将持有一个对外部类的隐式引用，而静态内部类则不会。
@@ -163,15 +166,15 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
         @Override
         public void handleMessage(Message msg) {
-            // ChatActivity activity = mActivity.get();
-            if (mActivity.get() != null) {
+             ChatActivity activity = mActivity.get();
+            if (activity != null) {
                 switch (msg.what) {
                     case 0x0001:
                         if (ActivityCollector.isActivityExist(ChatActivity.class)) {
                             SpannedString receiveMsg = SpannedString.valueOf(msg.obj.toString());
                             if (!TextUtils.isEmpty(receiveMsg)) {
                                 ChatMessage chatMessageReceiver = new ChatMessage();
-                                chatMessageReceiver.setTime(grtFormatTime());
+                                chatMessageReceiver.setTime(activity.grtFormatTime());
                                 chatMessageReceiver.setType(MessageAdapter.TYPE_RECEIVE);
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     chatMessageReceiver.setMessageContent(filterHtml(Html.toHtml(receiveMsg, Html.FROM_HTML_MODE_COMPACT)));
@@ -184,6 +187,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                             }
                         } else {
                             Log.e(TAG, "activity已被释放: ");
+                            mActivity.get().setTag();
                         }
                         break;
                     default:

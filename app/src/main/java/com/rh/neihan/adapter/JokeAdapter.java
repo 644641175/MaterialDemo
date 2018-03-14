@@ -2,10 +2,8 @@ package com.rh.neihan.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +12,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.rh.materialdemo.R;
 import com.rh.materialdemo.Util.MyToast;
 import com.rh.neihan.activity.WebActivity;
 import com.rh.neihan.gson.JokeDataDataEntity;
-import com.rh.neihan.utils.DataUtils;
-
+import com.rh.neihan.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +81,7 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.ViewHold> {
             holder.tvAuthor.setText(jokeDataDataEntity.getGroup().getUser().getName());
             holder.tvContent.setText(jokeDataDataEntity.getGroup().getContent());
             holder.tvCategory.setText(String.format("#%s", jokeDataDataEntity.getGroup().getCategory_name()));
-            holder.tvTime.setText(DataUtils.millis2CurrentTime(jokeDataDataEntity.getGroup().getCreate_time()));
+            holder.tvTime.setText(DateUtils.millis2CurrentTime(jokeDataDataEntity.getGroup().getCreate_time()));
             holder.tvDiggCount.setText(jokeDataDataEntity.getGroup().getDigg_count());
             holder.tvBurryCount.setText(jokeDataDataEntity.getGroup().getBury_count());
             holder.tvCommentCount.setText(jokeDataDataEntity.getGroup().getComment_count());

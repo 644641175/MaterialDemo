@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.rh.materialdemo.MainActivity;
 import com.rh.materialdemo.MyApplication;
 import com.rh.materialdemo.R;
@@ -33,16 +32,11 @@ import com.rh.materialdemo.Util.HttpUtils;
 import com.rh.materialdemo.Util.MyToast;
 import com.rh.materialdemo.Util.NetworkUtils;
 import com.rh.materialdemo.dialog.MyDialog;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-
-import javax.security.auth.login.LoginException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -76,7 +70,7 @@ public class CheckApkVersionActivity extends BaseActivity {
      * ID以标识WRITE_EXTERNAL_STORAGE权限请求。
      */
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    private static final int MY_PERMISSION_REQUEST_CODE = 1;
+    private static final int FIRST_INSTALL_REQUEST_ALL_PERMISSION = 1;
 
     private PackageInfo packageInfo;
     private String versionName;
@@ -134,7 +128,7 @@ public class CheckApkVersionActivity extends BaseActivity {
                             Manifest.permission.READ_CONTACTS,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
                     },
-                    MY_PERMISSION_REQUEST_CODE
+                    FIRST_INSTALL_REQUEST_ALL_PERMISSION
             );
         }
     }
@@ -225,7 +219,6 @@ public class CheckApkVersionActivity extends BaseActivity {
                     if (versionCode > getCode()) {
                         // 提示更新
                         //mUpdateHandler.sendEmptyMessage(UPDATE_YES);
-                        //mUpdateHandler.post(() -> showUpdateDialog());
                         mUpdateHandler.post(() -> mySelfDialog(content));
                     } else {
                         // 不更新，跳转到主页
@@ -319,7 +312,7 @@ public class CheckApkVersionActivity extends BaseActivity {
                     }, 2000);
                 }
                 break;
-            case MY_PERMISSION_REQUEST_CODE:
+            case FIRST_INSTALL_REQUEST_ALL_PERMISSION:
                 initView();
                 getJSON();
                 break;

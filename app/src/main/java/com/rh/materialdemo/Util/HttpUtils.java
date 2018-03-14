@@ -1,10 +1,16 @@
 package com.rh.materialdemo.Util;
 
+import android.support.test.espresso.core.deps.guava.util.concurrent.ThreadFactoryBuilder;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +21,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 /**
- *
  * @author RH
  * @date 2017/11/9
  */
@@ -23,9 +28,9 @@ import okhttp3.RequestBody;
 public class HttpUtils {
 
 
-/**
-    发起一条简单的GET请求，并使用com.squareup.okhttp3:okhttp:3.9.0开源jar包自带的okhttp3.Callback回调接口。
-*/
+    /**
+     * 发起一条简单的GET请求，并使用com.squareup.okhttp3:okhttp:3.9.0开源jar包自带的okhttp3.Callback回调接口。
+     */
     public static void sendOkHttpRequestWithGET(String address, okhttp3.Callback callback) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
@@ -35,6 +40,7 @@ public class HttpUtils {
         //OkHttp在enqueue()方法的内部已经帮我们开好了子线程，会在子线程中去执行HTTP请求。
         // 而execute（）方法没有开启线程，因此使用时一般需要开启一个线程来执行sendOkHttpRequestWithGET()中的HTTP请求
     }
+
     public static void sendOkHttpRequestWithGETWithConnectTimeOut(String address, okhttp3.Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(2, TimeUnit.SECONDS)
@@ -47,9 +53,9 @@ public class HttpUtils {
         // 而execute（）方法没有开启线程，因此使用时一般需要开启一个线程来执行sendOkHttpRequestWithGET()中的HTTP请求
     }
 
-/**
-    发起一条POST请求比GET复杂点，需要先构建一个RequestBody对象来存放待提交的数据
-*/
+    /**
+     * 发起一条POST请求比GET复杂点，需要先构建一个RequestBody对象来存放待提交的数据
+     */
     public static void sendOkHttpRequestWithPOST(String address, String name, String passwd, okhttp3.Callback callback) {
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = new FormBody.Builder()
@@ -64,8 +70,12 @@ public class HttpUtils {
         client.newCall(request).enqueue(callback);
     }
 
-    public static void sendHttpRequest(final String address, final HttpCallbackListener listener){
-        new Thread(() -> {
+    public static void sendHttpRequest(final String address, final HttpCallbackListener listener) {
+
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("demo-pool-%d").build();
+        ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        singleThreadPool.execute(() -> {
             HttpURLConnection connection = null;
             try {
                 URL url = new URL(address);
@@ -79,31 +89,33 @@ public class HttpUtils {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 StringBuilder response = new StringBuilder();
                 String line;
-                while ((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
 
-                if (listener != null){
+                if (listener != null) {
                     //回调onFinish()方法
                     listener.onFinish(response.toString());
                 }
 
             } catch (Exception e) {
                 //回调onError()fangfa
-                if (listener != null){
+                if (listener != null) {
                     listener.onError(e);
                 }
-            }finally {
-                if (connection != null){
+            } finally {
+                if (connection != null) {
                     connection.disconnect();
                 }
             }
-        }).start();
+        });
+        singleThreadPool.shutdown();
+
 
     }
 
 
-    public static boolean MatcherString(String str , String regEx){
+    public static boolean MatcherString(String str, String regEx) {
         //要验证的字符串
         //String str = "baike.xsoftlab.net";
         // 正则表达式规则

@@ -14,6 +14,8 @@ import com.rh.materialdemo.R;
 import com.rh.materialdemo.adapter.BaseFragmentPagerAdapter;
 import com.rh.neihan.fragment.BingPictureFragment;
 import com.rh.neihan.fragment.JokeFragment;
+import com.rh.toutiao.fragment.NewsArticleFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,11 +66,13 @@ public class NeiHanFragment extends Fragment {
         //Fragment jokeFragment1 = JokeFragment.newInstance("推荐");
         Fragment jokeFragment = JokeFragment.getInstance();
         Fragment  bingPictureFragment = BingPictureFragment.getInstance();
+        Fragment  newsArticle= NewsArticleFragment.getInstance();
       //  Fragment jokeFragment2 = JokeFragment.newInstance("段友秀");
       //  Fragment jokeFragmen3 = JokeFragment.newInstance("视频");
        // fragmentList.add(jokeFragment1);
         fragmentList.add(jokeFragment);
         fragmentList.add(bingPictureFragment);
+        fragmentList.add(newsArticle);
      //   fragmentList.add(jokeFragment2);
        // fragmentList.add(jokeFragmen3);
 
