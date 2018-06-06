@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.rh.materialdemo.R;
+import com.rh.materialdemo.activity.ChatActivity;
 import com.rh.materialdemo.bean.ChatMessage;
 
 import java.util.List;

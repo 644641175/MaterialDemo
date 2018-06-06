@@ -43,7 +43,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private static MessageAdapter messageAdapter;
     private static List<ChatMessage> chatChatMessage;
     private Intent webSocketService;
-    private static MyHandler mHandler;
+    public static MyHandler mHandler;
     private Button mbtSend;
 
     @Override
@@ -152,9 +152,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
      * <p>
      * //弱引用，避免Handler持有外部类的引用。即MainActivity的引用，
      * // 这样会导致MainActivity的上下文及资源无法被回收，引发内存泄露的情况发生
+     *
+     * 想要在别的类中直接使用ChatActivity.mHandler.sendEmptyMessage()需要将类的修饰符改为public
      */
 
-    private static class MyHandler extends Handler {
+    public static class MyHandler extends Handler {
         /**
          * Activity的弱引用
          */

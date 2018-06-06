@@ -93,6 +93,7 @@ public class WebSocketService extends Service {
                             message.obj = payload;
                             try {
                                 mMessenger.send(message);
+                                //ChatActivity.mHandler.sendMessage(message);
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }

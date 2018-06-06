@@ -61,8 +61,9 @@ public class MainActivity extends BaseActivity {
             //item.setCheckable(false);
             switch (item.getItemId()) {
                 case R.id.nav_call:
-                    Intent intentClient = new Intent(MainActivity.this, ClientActivity.class);
-                    startActivity(intentClient);
+                    MyToast.show("功能开发中，敬请期待！");
+                    /*Intent intentClient = new Intent(MainActivity.this, ClientActivity.class);
+                    startActivity(intentClient);*/
                     break;
                 case R.id.nav_friend:
                     Intent intentWeatherLocation = new Intent(MainActivity.this, WeatherLocationActivity.class);
@@ -73,7 +74,7 @@ public class MainActivity extends BaseActivity {
                     startActivity(intentDownload);
                     break;
                 case R.id.nav_location:
-                    // MyToast.show("功能开发中，敬请期待！");
+                    //MyToast.show("功能开发中，敬请期待！");
                     Intent intentServer = new Intent(MainActivity.this, ServerActivity.class);
                     startActivity(intentServer);
                     break;
